@@ -13,6 +13,18 @@ builder.Services.AddScoped<IReapprovisionnementService, ReapprovisionnementServi
 builder.Services.AddScoped<IPerformancesService, PerformancesService>();
 builder.Services.AddScoped<IProduitService, ProduitService>();
 builder.Services.AddScoped<IVenteService, VenteService>();
+builder.Services.AddScoped<IStockService, StockService>();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Magasin Central API",
+        Version = "v1",
+        Description = "API for managing the central store operations."
+    });
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -25,21 +37,28 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Magasin Central API V1");
+        c.RoutePrefix = "swagger";
+    });
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
 
+app.MapControllers();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
