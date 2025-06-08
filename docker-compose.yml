@@ -32,7 +32,7 @@ services:
         Host=db;Port=5432;Database=magasincentraldb;
         Username=magasinuser;Password=magasinpass
     ports:
-      - "80:80"
+      - "70:80"
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost/healthz || exit 1"]
       interval: 30s
