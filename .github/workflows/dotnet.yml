@@ -40,16 +40,16 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Docker image
-        run: docker build -t magasincentral-mvc .
+        run: docker build -t magasincentral-api .
 
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
       - name: Tag Docker image
-        run: docker tag magasincentral-mvc docker.io/${{ secrets.DOCKERHUB_USERNAME }}/magasincentral-mvc:latest
+        run: docker tag magasincentral-api docker.io/${{ secrets.DOCKERHUB_USERNAME }}/magasincentral-api:latest
 
       - name: Push Docker image
-        run: docker push docker.io/${{ secrets.DOCKERHUB_USERNAME }}/magasincentral-mvc:latest
+        run: docker push docker.io/${{ secrets.DOCKERHUB_USERNAME }}/magasincentral-api:latest
 
   deploy:
     name: Deploy to VM via SSH
@@ -67,10 +67,10 @@ jobs:
             set -e
 
             # clone once, then on every run reset to main
-            if [ ! -d ~/magasincentral ]; then
-              git clone https://github.com/ahmedsherif98/magasincentral-mvc.git ~/magasincentral
+            if [ ! -d ~/magasincentral-etape2 ]; then
+              git clone https://github.com/itsahmed98/log430-lab3-magasinMVC-api.git ~/magasincentral-etape2
             fi
-            cd ~/magasincentral
+            cd ~/magasincentral-etape2
             git fetch --all
             git reset --hard origin/main
 

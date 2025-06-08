@@ -23,8 +23,8 @@ services:
 
   # Application .NET Core
   app:
-    image: ahmedsherif98/magasincentral-mvc:latest
-    container_name: magasincentral-app
+    image: ahmedsherif98/magasincentral-api:latest
+    container_name: magasincentral-app-api
     restart: unless-stopped
     depends_on:
       db:
