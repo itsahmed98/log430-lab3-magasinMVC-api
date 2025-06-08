@@ -75,5 +75,6 @@ jobs:
 
             # tear down & rebuild fresh
             docker-compose down --remove-orphans
+            docker rm -f magasincentral-api-db 2>/dev/null || true
             docker-compose pull
             docker-compose up -d --build --remove-orphans
