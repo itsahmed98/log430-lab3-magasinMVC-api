@@ -28,9 +28,8 @@ services:
         condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: "Production"
-      ConnectionStrings__DefaultConnection: >
-        Host=db;Port=5432;Database=magasincentraldb;
-        Username=magasinuser;Password=magasinpass
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=magasincentraldb;Username=magasinuser;Password=magasinpass"
+
     ports:
       - "70:80"
     healthcheck:
