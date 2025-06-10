@@ -30,9 +30,21 @@ namespace MagasinCentral.Api.Controllers
         }
 
         /// <summary>
-        /// Authentifier un utilisateur et émettre un JWT.
+        /// Authentifier un utilisateur et générer un token JWT.
         /// </summary>
+        /// <remarks>
+        /// Exemple de requête:
+        /// {
+        ///   "email": "admin@test.com",
+        ///   "password": "MySecret123"
+        /// }
+        /// </remarks>
+        /// <param name="request">Les informations de connexion</param>
+        /// <returns>JWT et expiration</returns>
         [HttpPost("login")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             // LoginRequest contient Email et Password

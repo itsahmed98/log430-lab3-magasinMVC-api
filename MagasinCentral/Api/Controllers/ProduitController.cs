@@ -40,6 +40,10 @@ namespace MagasinCentral.Api.Controllers
         /// </summary>
         /// <param name="produitId"></param>
         /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{produitId:int}")]
         public async Task<IActionResult> Produit(int produitId)
         {
