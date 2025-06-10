@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MagasinCentral.Services;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MagasinCentral.Api.Controllers
 {
@@ -8,6 +9,7 @@ namespace MagasinCentral.Api.Controllers
     /// Contrôleur pour visualiser les performances des magasins.
     /// </summary>
     [ApiController]
+    [Authorize]
     [Route("api/v1/performances")]
     public class PerformancesController : ControllerBase
     {

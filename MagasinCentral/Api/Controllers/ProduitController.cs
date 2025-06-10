@@ -1,6 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
-using MagasinCentral.Services;
 using MagasinCentral.Models;
+using MagasinCentral.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MagasinCentral.Api.Controllers
 {
@@ -8,6 +9,7 @@ namespace MagasinCentral.Api.Controllers
     /// Contrôleur pour la gestion des produits.
     /// </summary>
     [ApiController]
+    [Authorize]
     [Route("api/v1/produits")]
     public class ProduitController : ControllerBase
     {

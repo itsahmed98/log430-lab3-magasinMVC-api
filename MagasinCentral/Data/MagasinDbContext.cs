@@ -1,12 +1,14 @@
 using MagasinCentral.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace MagasinCentral.Data
 {
     /// <summary>
     /// Contexte EF Core pour MagasinCentral (PostgreSQL).
     /// </summary>
-    public class MagasinDbContext : DbContext
+    public class MagasinDbContext : IdentityDbContext<IdentityUser>
     {
         public MagasinDbContext(DbContextOptions<MagasinDbContext> options)
             : base(options)
