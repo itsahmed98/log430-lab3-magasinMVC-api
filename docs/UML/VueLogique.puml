@@ -62,6 +62,14 @@ package "MagasinCentral" {
         class PerformancesService {}
         class ReapprovisionnementService {}
     }
+
+    package "Api" {
+        class ProduitController {}
+        class RapportController {}
+        class AuthController {}
+        class PerformancesController {}
+        class StockController {}
+    }
 }
 
 

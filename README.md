@@ -1,10 +1,11 @@
-# LABORATOIRE 2 — LOG430 | MagasinCentral à 3-couches
+# LABORATOIRE 3 — LOG430 | MagasinCentral à 3-couches
 
 ## Répo GitHub (public)
 
 - https://github.com/itsahmed98/log430-lab0
 - https://github.com/itsahmed98/log430-lab1
 - https://github.com/itsahmed98/log430-lab2-mvc
+- https://github.com/itsahmed98/log430-lab3-magasinMVC-api.git
 
 ---
 
@@ -12,7 +13,7 @@
 
 Ce projet est une application Web (.NET 8) qui étend le fonctionnement de plusieurs caisses d’un commerce. Cette application offre une gestion de plusieurs magasin à partir d'un magasin central
 
-L'application est monolithique et suit une architecture en couche 3-tier
+L'application est monolithique et suit une architecture en couche 3-tier, mais ce qui est de plus dans ce laboratoire est l'exposition d'une API pour permettre l'intéropératbilité avec les clients externes.
 
 ---
 
@@ -21,12 +22,62 @@ L'application est monolithique et suit une architecture en couche 3-tier
 | Id  | Fonction                                                         |
 | --- | ---------------------------------------------------------------- |
 | UC1 | Générer un rapport consolidé des ventes                          |
-| UC2 | Consulter le stock central et déclencher un réapprovisionnement  |
+| UC2 | Consulter le stock d'un magasin                                  |
 | UC3 | Visualiser les performances des magasins dans un tableau de bord |
 | UC4 | Mettre à jour les produits depuis la maison mère                 |
-| UC6 | Approvisionner un magasin depuis le centre logistique            |
 
 ---
+
+# Guide pour l'API
+
+Quand on lance l'application, accèder l'api dans: /swagger
+
+## Authentification
+
+**TOUS les routes sont sécurisés. Il faut un bearer token pour y accèder. Pour cela, il faut enregistrer et ensuite login avec ce compte. Quand c'est faut, vous allez recevoir un bearer token. Ce token doit etre utilisé dans les requetes pour avoir accès.**
+
+- POST /api/v1/auth/login
+
+exemple de requete:
+{
+"email": "string",
+"password": "string"
+}
+
+- POST /api/v1/auth/register
+
+{
+"email": "string",
+"password": "string"
+}
+
+## Performances
+
+- GET /api/v1/performances
+
+## Produit
+
+- GET /api/v1/produits
+- GET /api/v1/produits/{produitId}
+- PUT //api/v1/produits/{produitId}
+
+  Exemple de requete:
+  test avec:
+  {
+  "produitId": 3,
+  "nom": "Clé USB 32 Go",
+  "categorie": "Électronique",
+  "prix": 15.00,
+  "description": "Clé USB 32 Go avec protection améliorée333"
+  }
+
+## Rapport
+
+- GET /api/v1/rapports
+
+## Stock
+
+- GET /api/v1/stock
 
 ## Suite de tests
 
@@ -44,9 +95,16 @@ dotnet test
 
 ```plaintext
 
-log430-lab2-mvc/
+log430-lab3-magasinmvc-api/
 ├── MagasinCentral/
 │ ├── Program.cs
+  ├── Api/
+    ├── Controllers
+        ├── AuthController.cs
+        ├── PerformanceController.cs
+        ├── ProduitController.cs
+        ├── RapportController.cs
+        ├── StockController.cs
 │ ├── Models/
 │ ├── Data/
 │ ├── Services/
@@ -74,13 +132,12 @@ log430-lab2-mvc/
 
 ### 1. Cloner le dépôt et aller dans le fichier racine
 
-    - git clone https://github.com/itsahmed98/log430-lab2-mvc.git
-    - cd log430-lab2-mvc
+    - git clone https://github.com/itsahmed98/log430-lab3-magasinMVC-api.git
+    - cd log430-lab3-magasinMVC-ap
 
 ### 2. Lancer l'application avec docker compose
 
     - docker compose up --build -d
-    L’application va démarrer une instance du WebApp + PostgreSQL
 
 ---
 
@@ -88,11 +145,11 @@ log430-lab2-mvc/
 
 Les images sont disponible ici: https://hub.docker.com/u/ahmedsherif98
 
-pour récupèrer une imgage - docker pull ahmedsherif98/magasincentral-mvc:latest
+pour récupèrer une imgage - docker pull ahmedsherif98/magasincentral-mvc-api:latest
 
 ## 🚀 CI/CD — Pipeline
 
-- https://github.com/itsahmed98/log430-lab2-mvc/actions
+- https://github.com/itsahmed98/log430-lab3-magasinMVC-api/actions
 
 Le pipeline CI/CD :
 
@@ -101,6 +158,7 @@ Le pipeline CI/CD :
 3. Lance les tests unitaires (avec xunit)
 4. Construit l’image Docker
 5. Publie l’image sur Docker Hub (avec un tag par defaut "latest")
+6. Deploiement en prod
 
 ## Auteur
 

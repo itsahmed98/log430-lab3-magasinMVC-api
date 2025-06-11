@@ -83,6 +83,14 @@ package "MagasinCentral.Models (Domain)" as Models <<Layer>> {
   [Vente] <<Entity>>
 }
 
+package "MagasinCentral.Api" as API <<Layer>> {
+  [AuthController] <<Component>>
+  [PerformancesController] <<Component>>
+  [RapportController] <<Component>>
+  [ProduitController] <<Component>>
+  [StockController] <<Component>>
+}
+
 controller --> Services : <<use>>
 view -> controller : <<Requête Http>>
 
@@ -103,6 +111,8 @@ MagasinDbContext --> StockCentral : <<mappe>>
 MagasinDbContext --> Vente : <<mappe>>
 
 DataSeeder --> MagasinDbContext : <<alimente>>
+
+API --> Services : <<utilise>>
 
 
 @enduml

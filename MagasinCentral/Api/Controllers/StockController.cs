@@ -34,7 +34,7 @@ namespace MagasinCentral.Api.Controllers
         /// Récupérer la quantité du stock dans un magasin spécifique.
         /// </summary>
         /// <returns></returns>
-        [HttpGet(Name = "GetStockMagasin")]
+        [HttpGet]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
