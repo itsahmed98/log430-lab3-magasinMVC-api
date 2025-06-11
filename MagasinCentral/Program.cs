@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Prometheus;
 using System.Text;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +30,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<MagasinDbContext>()
     .AddDefaultTokenProviders();
 
-// Configuration des services d'identité
+// Configuration des services d'identitï¿½
 var key = Encoding.UTF8.GetBytes(jwtSettings.Secret);
 builder.Services.AddAuthentication(options =>
 {
@@ -137,14 +137,19 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
+    //app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCors("AllowFrontend");
 
+app.UseHttpMetrics(); // Middleware pour les mï¿½triques HTTP
+app.MapMetrics();
+
 app.UseRouting();
+
+app.MapHealthChecks("/healthz");
 
 app.UseAuthentication();
 app.UseAuthorization();
