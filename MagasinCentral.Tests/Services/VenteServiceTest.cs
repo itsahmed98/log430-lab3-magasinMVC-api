@@ -32,7 +32,7 @@ namespace MagasinCentral.Tests.Services
             var magasinId = 1;
             var lignes = new List<(int produitId, int quantite)>
             {
-                (1, 2),
+                (3, 2),
                 (2, 3)
             };
 
