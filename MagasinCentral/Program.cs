@@ -31,7 +31,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     .AddDefaultTokenProviders();
 
 // Configuration des services d'identit�
-var key = Encoding.UTF8.GetBytes(jwtSettings.Secret);
+var key = Encoding.UTF8.GetBytes(jwtSettings!.Secret);
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
