@@ -59,7 +59,6 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-
 builder.Services.AddScoped<IRapportService, RapportService>();
 builder.Services.AddScoped<IReapprovisionnementService, ReapprovisionnementService>();
 builder.Services.AddScoped<IPerformancesService, PerformancesService>();
@@ -115,6 +114,7 @@ builder.Services.AddCors(options =>
             .AllowCredentials());
 });
 
+// builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -149,7 +149,7 @@ app.MapMetrics();
 
 app.UseRouting();
 
-app.MapHealthChecks("/healthz");
+// app.MapHealthChecks("/healthz");
 
 app.UseAuthentication();
 app.UseAuthorization();
