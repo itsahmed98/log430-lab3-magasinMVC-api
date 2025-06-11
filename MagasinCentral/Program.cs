@@ -114,8 +114,6 @@ builder.Services.AddCors(options =>
             .AllowCredentials());
 });
 
-// builder.Services.AddHealthChecks();
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -148,8 +146,6 @@ app.UseHttpMetrics(); // Middleware pour les m�triques HTTP
 app.MapMetrics();
 
 app.UseRouting();
-
-// app.MapHealthChecks("/healthz");
 
 app.UseAuthentication();
 app.UseAuthorization();
