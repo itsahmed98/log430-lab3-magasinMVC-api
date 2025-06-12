@@ -5,7 +5,13 @@ scrape_configs:
   - job_name: "magasincentral-api"
     metrics_path: "/metrics"
     static_configs:
-      - targets: ["app:80"]
+      - targets:
+          - "log430-lab3-magasinmvc-api-app-1:80"
+          - "log430-lab3-magasinmvc-api-app-2:80"
+          - "log430-lab3-magasinmvc-api-app-3:80"
+          - "log430-lab3-magasinmvc-api-app-4:80"
+          - "log430-lab3-magasinmvc-api-app-5:80"
+          - "log430-lab3-magasinmvc-api-app-6:80"
 
   - job_name: "node-exporter"
     metrics_path: "/metrics"

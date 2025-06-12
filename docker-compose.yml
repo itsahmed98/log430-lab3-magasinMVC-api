@@ -17,18 +17,24 @@ services:
       context: .
       dockerfile: Dockerfile
     image: magasincentral-api:latest
-    container_name: magasincentral-app-api
-    restart: unless-stopped
-    depends_on:
-      - db
     environment:
       ASPNETCORE_URLS: "http://+:80"
       ASPNETCORE_ENVIRONMENT: "Production"
       ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=magasincentraldb;Username=magasinuser;Password=magasinpass"
-
-    ports:
-      - "70:80"
+    depends_on:
+      - db
   
+  nginx:
+    image: nginx:stable
+    container_name: magasincentral-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
+
+
     # Prometheus pour les métriques
   prometheus:
     image: prom/prometheus:latest
