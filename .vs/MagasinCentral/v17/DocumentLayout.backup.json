@@ -1,0 +1,131 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\projetsDev\\log430-lab3-magasinMVC-api\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|e:\\projetsdev\\log430-lab3-magasinmvc-api\\magasincentral\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|solutionrelative:magasincentral\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|e:\\projetsdev\\log430-lab3-magasinmvc-api\\magasincentral\\api\\controllers\\rapportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|solutionrelative:magasincentral\\api\\controllers\\rapportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5120D633-E62A-4D21-A080-D4CE05ECF0B3}|MagasinCentral.Tests\\MagasinCentral.Tests.csproj|e:\\projetsdev\\log430-lab3-magasinmvc-api\\magasincentral.tests\\services\\venteservicetest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5120D633-E62A-4D21-A080-D4CE05ECF0B3}|MagasinCentral.Tests\\MagasinCentral.Tests.csproj|solutionrelative:magasincentral.tests\\services\\venteservicetest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|e:\\projetsdev\\log430-lab3-magasinmvc-api\\magasincentral\\api\\controllers\\stockcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|solutionrelative:magasincentral\\api\\controllers\\stockcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|e:\\projetsdev\\log430-lab3-magasinmvc-api\\magasincentral\\api\\controllers\\produitcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|solutionrelative:magasincentral\\api\\controllers\\produitcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|e:\\projetsdev\\log430-lab3-magasinmvc-api\\magasincentral\\api\\controllers\\performancescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B42A2BB1-A7AD-4689-B795-629B16FAE538}|MagasinCentral\\MagasinCentral.csproj|solutionrelative:magasincentral\\api\\controllers\\performancescontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "E:\\projetsDev\\log430-lab3-magasinMVC-api\\MagasinCentral\\Program.cs",
+              "RelativeDocumentMoniker": "MagasinCentral\\Program.cs",
+              "ToolTip": "E:\\projetsDev\\log430-lab3-magasinMVC-api\\MagasinCentral\\Program.cs",
+              "RelativeToolTip": "MagasinCentral\\Program.cs",
+              "ViewState": "AgIAAHgAAAAAAAAAAAAAAJgAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T21:30:33.621Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RapportController.cs",
+              "DocumentMoniker": "E:\\projetsDev\\log430-lab3-magasinMVC-api\\MagasinCentral\\Api\\Controllers\\RapportController.cs",
+              "RelativeDocumentMoniker": "MagasinCentral\\Api\\Controllers\\RapportController.cs",
+              "ToolTip": "E:\\projetsDev\\log430-lab3-magasinMVC-api\\MagasinCentral\\Api\\Controllers\\RapportController.cs",
+              "RelativeToolTip": "MagasinCentral\\Api\\Controllers\\RapportController.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABAAAAAhAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T15:52:41.282Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PerformancesController.cs",
+              "DocumentMoniker": "E:\\projetsDev\\log430-lab3-magasinMVC-api\\MagasinCentral\\Api\\Controllers\\PerformancesController.cs",
+              "RelativeDocumentMoniker": "MagasinCentral\\Api\\Controllers\\PerformancesController.cs",
+              "ToolTip": "E:\\projetsDev\\log430-lab3-magasinMVC-api\\MagasinCentral\\Api\\Controllers\\PerformancesController.cs",
+              "RelativeToolTip": "MagasinCentral\\Api\\Controllers\\PerformancesController.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAsAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T15:50:06.298Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "VenteServiceTest.cs",
+              "DocumentMoniker": "E:\\projetsDev\\log430-lab3-magasinMVC-api\\MagasinCentral.Tests\\Services\\VenteServiceTest.cs",
+              "RelativeDocumentMoniker": "MagasinCentral.Tests\\Services\\VenteServiceTest.cs",
+              "ToolTip": "E:\\projetsDev\\log430-lab3-magasinMVC-api\\MagasinCentral.Tests\\Services\\VenteServiceTest.cs",
+              "RelativeToolTip": "MagasinCentral.Tests\\Services\\VenteServiceTest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAABMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T00:23:13.195Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ProduitController.cs",
+              "DocumentMoniker": "E:\\projetsDev\\log430-lab3-magasinMVC-api\\MagasinCentral\\Api\\Controllers\\ProduitController.cs",
+              "RelativeDocumentMoniker": "MagasinCentral\\Api\\Controllers\\ProduitController.cs",
+              "ToolTip": "E:\\projetsDev\\log430-lab3-magasinMVC-api\\MagasinCentral\\Api\\Controllers\\ProduitController.cs",
+              "RelativeToolTip": "MagasinCentral\\Api\\Controllers\\ProduitController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAGAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T21:50:17.058Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "StockController.cs",
+              "DocumentMoniker": "E:\\projetsDev\\log430-lab3-magasinMVC-api\\MagasinCentral\\Api\\Controllers\\StockController.cs",
+              "RelativeDocumentMoniker": "MagasinCentral\\Api\\Controllers\\StockController.cs",
+              "ToolTip": "E:\\projetsDev\\log430-lab3-magasinMVC-api\\MagasinCentral\\Api\\Controllers\\StockController.cs",
+              "RelativeToolTip": "MagasinCentral\\Api\\Controllers\\StockController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-10T21:47:33.489Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
