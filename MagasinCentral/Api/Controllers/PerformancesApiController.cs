@@ -9,14 +9,14 @@ namespace MagasinCentral.Api.Controllers
     /// Contrôleur pour visualiser les performances des magasins.
     /// </summary>
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("api/v1/performances")]
-    public class PerformancesController : ControllerBase
+    public class PerformancesApiController : ControllerBase
     {
         private readonly IPerformancesService _performancesService;
-        private readonly ILogger<PerformancesController> _logger;
+        private readonly ILogger<PerformancesApiController> _logger;
 
-        public PerformancesController(ILogger<PerformancesController> logger, IPerformancesService performancesService)
+        public PerformancesApiController(ILogger<PerformancesApiController> logger, IPerformancesService performancesService)
         {
             _performancesService = performancesService ?? throw new ArgumentNullException(nameof(performancesService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

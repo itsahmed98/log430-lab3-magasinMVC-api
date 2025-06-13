@@ -10,11 +10,11 @@ namespace MagasinCentral.Api.Controllers
     /// </summary>
     [ApiController]
     [Route("api/v1/stocks")]
-    [Authorize]
-    public class StockController : ControllerBase
+    //[Authorize]
+    public class StockApiController : ControllerBase
     {
         private readonly IStockService _stockService;
-        private readonly ILogger<StockController> _logger;
+        private readonly ILogger<StockApiController> _logger;
 
         /// <summary>
         /// Constructeur du contrôleur de rapport.
@@ -22,7 +22,7 @@ namespace MagasinCentral.Api.Controllers
         /// <param name="logger"></param>
         /// <param name="stockService"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public StockController(ILogger<StockController> logger, IStockService stockService)
+        public StockApiController(ILogger<StockApiController> logger, IStockService stockService)
         {
             {
                 _stockService = stockService ?? throw new ArgumentNullException(nameof(stockService));

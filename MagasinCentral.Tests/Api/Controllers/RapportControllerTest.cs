@@ -8,27 +8,27 @@ using Moq;
 namespace MagasinCentral.Tests.Api.Controllers
 {
     /// <summary>
-    /// Tests pour le contrôleur Api <see cref="RapportController"/>.
+    /// Tests pour le contrôleur Api <see cref="RapportApiController"/>.
     /// </summary>
     public class RapportControllerTests
     {
         private readonly Mock<IRapportService> _rapportServiceMock;
         private readonly Mock<ILogger<IRapportService>> _loggerMock;
-        private readonly RapportController _controller;
+        private readonly RapportApiController _controller;
 
         public RapportControllerTests()
         {
             _rapportServiceMock = new Mock<IRapportService>();
             _loggerMock = new Mock<ILogger<IRapportService>>();
-            _controller = new RapportController(_loggerMock.Object, _rapportServiceMock.Object);
+            _controller = new RapportApiController(_loggerMock.Object, _rapportServiceMock.Object);
         }
 
         [Fact]
         public void Constructeur_ThrowsArgumentNullException_WhenServiceIsNull()
         {
             // Arrange & Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new RapportController(_loggerMock.Object, null!));
-            Assert.Throws<ArgumentNullException>(() => new RapportController(null!, _rapportServiceMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new RapportApiController(_loggerMock.Object, null!));
+            Assert.Throws<ArgumentNullException>(() => new RapportApiController(null!, _rapportServiceMock.Object));
         }
 
         [Fact]

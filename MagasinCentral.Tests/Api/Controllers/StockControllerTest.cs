@@ -7,27 +7,27 @@ using Microsoft.Extensions.Logging;
 namespace MagasinCentral.Tests.Api.Controllers
 {
     /// <summary>
-    /// Tests pour le contrôleur Api <see cref="StockController"/>.
+    /// Tests pour le contrôleur Api <see cref="StockApiController"/>.
     /// </summary>
     public class StockControllerTest
     {
         private readonly Mock<IStockService> _stockServiceMock;
-        private readonly Mock<ILogger<StockController>> _loggerMock;
-        private readonly StockController _controller;
+        private readonly Mock<ILogger<StockApiController>> _loggerMock;
+        private readonly StockApiController _controller;
 
         public StockControllerTest()
         {
             _stockServiceMock = new Mock<IStockService>();
-            _loggerMock = new Mock<ILogger<StockController>>();
-            _controller = new StockController(_loggerMock.Object, _stockServiceMock.Object);
+            _loggerMock = new Mock<ILogger<StockApiController>>();
+            _controller = new StockApiController(_loggerMock.Object, _stockServiceMock.Object);
         }
 
         [Fact]
         public void Constructeur_ThrowsArgumentNullException_WhenServiceIsNull()
         {
             // Arrange & Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new StockController(_loggerMock.Object, null!));
-            Assert.Throws<ArgumentNullException>(() => new StockController(null!, _stockServiceMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new StockApiController(_loggerMock.Object, null!));
+            Assert.Throws<ArgumentNullException>(() => new StockApiController(null!, _stockServiceMock.Object));
         }
 
         [Fact]

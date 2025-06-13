@@ -10,8 +10,8 @@ namespace MagasinCentral.Api.Controllers
     /// </summary>
     [ApiController]
     [Route("api/v1/rapports")]
-    [Authorize]
-    public class RapportController : ControllerBase
+    //[Authorize]
+    public class RapportApiController : ControllerBase
     {
         private readonly IRapportService _rapportService;
         private readonly ILogger<IRapportService> _logger;
@@ -22,7 +22,7 @@ namespace MagasinCentral.Api.Controllers
         /// <param name="logger"></param>
         /// <param name="rapportService"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public RapportController(ILogger<IRapportService> logger, IRapportService rapportService)
+        public RapportApiController(ILogger<IRapportService> logger, IRapportService rapportService)
         {
             {
                 _rapportService = rapportService ?? throw new ArgumentNullException(nameof(rapportService));
@@ -34,7 +34,7 @@ namespace MagasinCentral.Api.Controllers
         /// Récupérer le rapport consolidé des ventes.
         /// </summary>
         /// <returns></returns>
-        [HttpGet(Name = "GetRapportConsolide")]
+        [HttpGet]
         [ProducesResponseType(typeof(RapportDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RapportConsolide()

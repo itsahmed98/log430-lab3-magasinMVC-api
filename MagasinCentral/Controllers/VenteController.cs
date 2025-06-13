@@ -14,6 +14,7 @@ public class VenteController : Controller
     private readonly IVenteService _venteService;
     private readonly IProduitService _produitService;
     private readonly MagasinDbContext _contexte;
+    private readonly ILogger<VenteController> _logger;
 
     /// <summary>
     /// Constructeur pour initialiser les services nécessaires à la gestion des ventes.
@@ -21,13 +22,13 @@ public class VenteController : Controller
     /// <param name="venteService"></param>
     /// <param name="produitService"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    public VenteController(IVenteService venteService, IProduitService produitService, MagasinDbContext contexte)
+    public VenteController(ILogger<VenteController> logger, IVenteService venteService, IProduitService produitService, MagasinDbContext contexte)
     {
         _venteService = venteService ?? throw new ArgumentNullException(nameof(venteService));
         _produitService = produitService ?? throw new ArgumentNullException(nameof(produitService));
         _contexte = contexte ?? throw new ArgumentNullException(nameof(contexte));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
-
 
     /// <summary>
     /// Affiche le formulaire pour enregistrer une vente dans un magasin spécifique.
@@ -40,7 +41,6 @@ public class VenteController : Controller
         var produits = await _produitService.GetAllProduitsAsync();
         return View(produits);
     }
-
 
     /// <summary>
     /// Enregistre une vente pour un magasin donné avec les produits et quantités spécifiés.

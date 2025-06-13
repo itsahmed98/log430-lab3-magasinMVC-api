@@ -9,14 +9,14 @@ namespace MagasinCentral.Api.Controllers
     /// Contrôleur pour la gestion des produits.
     /// </summary>
     [ApiController]
-    [Authorize]
+    //[Authorize]
     [Route("api/v1/produits")]
-    public class ProduitController : ControllerBase
+    public class ProduitApiController : ControllerBase
     {
         private readonly IProduitService _produitService;
-        private readonly ILogger<ProduitController> _logger;
+        private readonly ILogger<ProduitApiController> _logger;
 
-        public ProduitController(ILogger<ProduitController> logger, IProduitService produitService)
+        public ProduitApiController(ILogger<ProduitApiController> logger, IProduitService produitService)
         {
             _produitService = produitService ?? throw new ArgumentNullException(nameof(produitService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));

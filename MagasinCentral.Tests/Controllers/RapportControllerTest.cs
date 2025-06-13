@@ -6,22 +6,30 @@ using MagasinCentral.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Xunit;
+using Microsoft.Extensions.Logging;
 
 namespace MagasinCentral.Tests
 {
     /// <summary>
-    ///     Tests unitaires pour le RapportController.
+    /// Tests unitaires pour le RapportController.
     /// </summary>
     public class RapportControllerTest
     {
+        private readonly Mock<IRapportService> _rapportServiceMock;
+        private readonly Mock<ILogger<RapportController>> _loggerMock;
+
+        public RapportControllerTest()
+        {
+            _rapportServiceMock = new Mock<IRapportService>();
+            _loggerMock = new Mock<ILogger<RapportController>>();
+        }
+
         [Fact]
         public void Constructeur_NullService_ThrowsArgumentNullException()
         {
-            // Arrange
-            IRapportService rapportService = null!;
-
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new RapportController(rapportService));
+            Assert.Throws<ArgumentNullException>(() => new RapportController(null!, _rapportServiceMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new RapportController(_loggerMock.Object, null!));
         }
 
         [Fact]
@@ -29,7 +37,7 @@ namespace MagasinCentral.Tests
         {
             // Arrange
             var rapportServiceMock = new Mock<IRapportService>();
-            var rapportController = new RapportController(rapportServiceMock.Object);
+            var rapportController = new RapportController(_loggerMock.Object, rapportServiceMock.Object);
 
             var rapportConsolide = new List<RapportDto>
             {

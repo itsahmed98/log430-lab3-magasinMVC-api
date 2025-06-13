@@ -1,5 +1,4 @@
 using MagasinCentral.Services;
-using MagasinCentral.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagasinCentral.Controllers
@@ -10,10 +9,12 @@ namespace MagasinCentral.Controllers
     public class PerformancesController : Controller
     {
         private readonly IPerformancesService _performancesService;
+        private readonly ILogger<PerformancesController> _logger;
 
-        public PerformancesController(IPerformancesService performancesService)
+        public PerformancesController(IPerformancesService performancesService, ILogger<PerformancesController> logger)
         {
             _performancesService = performancesService ?? throw new ArgumentNullException(nameof(performancesService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -21,8 +22,23 @@ namespace MagasinCentral.Controllers
         /// </summary>
         public async Task<IActionResult> Index()
         {
-            var model = await _performancesService.GetPerformances();
-            return View(model);
+            IActionResult? result = null;
+
+            _logger.LogInformation("Tentative de récupération des performances...");
+
+            try
+            {
+                var model = await _performancesService.GetPerformances();
+                _logger.LogInformation("Performaces ont été récupérées avec succès.");
+                result = View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Une erreur s'est produite lors de la récupération des performances.");
+                result = View("Error");
+            }
+
+            return result;
         }
     }
 }

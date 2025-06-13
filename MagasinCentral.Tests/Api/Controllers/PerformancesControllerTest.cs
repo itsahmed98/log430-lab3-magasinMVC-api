@@ -12,14 +12,14 @@ namespace MagasinCentral.Api.Controllers
     public class PerformancesControllerTests
     {
         private readonly Mock<IPerformancesService> _performancesServiceMock;
-        private readonly Mock<ILogger<PerformancesController>> _loggerMock;
-        private readonly PerformancesController _controller;
+        private readonly Mock<ILogger<PerformancesApiController>> _loggerMock;
+        private readonly PerformancesApiController _controller;
 
         public PerformancesControllerTests()
         {
             _performancesServiceMock = new Mock<IPerformancesService>();
-            _loggerMock = new Mock<ILogger<PerformancesController>>();
-            _controller = new PerformancesController(_loggerMock.Object, _performancesServiceMock.Object);
+            _loggerMock = new Mock<ILogger<PerformancesApiController>>();
+            _controller = new PerformancesApiController(_loggerMock.Object, _performancesServiceMock.Object);
         }
 
         /// <summary>
@@ -29,8 +29,8 @@ namespace MagasinCentral.Api.Controllers
         public void Constructeur_ThrowsArgumentNullException_WhenServiceIsNull()
         {
             // Arrange & Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new PerformancesController(_loggerMock.Object, null!));
-            Assert.Throws<ArgumentNullException>(() => new PerformancesController(null!, _performancesServiceMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new PerformancesApiController(_loggerMock.Object, null!));
+            Assert.Throws<ArgumentNullException>(() => new PerformancesApiController(null!, _performancesServiceMock.Object));
         }
 
         /// <summary>

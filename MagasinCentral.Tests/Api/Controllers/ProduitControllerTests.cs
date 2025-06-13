@@ -8,26 +8,26 @@ using MagasinCentral.Models;
 namespace MagasinCentral.Api.Tests
 {
     /// <summary>
-    /// Tests pour le contrôleur Api <see cref="ProduitController"/>
+    /// Tests pour le contrôleur Api <see cref="ProduitApiController"/>
     /// </summary>
     public class ProduitControllerTest
     {
         private readonly Mock<IProduitService> _serviceMock;
-        private readonly Mock<ILogger<ProduitController>> _loggerMock;
-        private readonly ProduitController _controller;
+        private readonly Mock<ILogger<ProduitApiController>> _loggerMock;
+        private readonly ProduitApiController _controller;
 
         public ProduitControllerTest()
         {
             _serviceMock = new Mock<IProduitService>();
-            _loggerMock = new Mock<ILogger<ProduitController>>();
-            _controller = new ProduitController(_loggerMock.Object, _serviceMock.Object);
+            _loggerMock = new Mock<ILogger<ProduitApiController>>();
+            _controller = new ProduitApiController(_loggerMock.Object, _serviceMock.Object);
         }
 
         public void Constructeur_ThrowsArgumentNullException_WhenServiceIsNull()
         {
             // Arrange & Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new ProduitController(_loggerMock.Object, null!));
-            Assert.Throws<ArgumentNullException>(() => new ProduitController(null!, _serviceMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new ProduitApiController(_loggerMock.Object, null!));
+            Assert.Throws<ArgumentNullException>(() => new ProduitApiController(null!, _serviceMock.Object));
         }
 
         [Fact]

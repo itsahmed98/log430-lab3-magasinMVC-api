@@ -5,6 +5,7 @@ using MagasinCentral.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Logging;
 
 namespace MagasinCentral.Tests.Controllers
 {
@@ -16,11 +17,13 @@ namespace MagasinCentral.Tests.Controllers
     {
         private readonly Mock<IReapprovisionnementService> _serviceMock;
         private readonly TraiterDemandesController _controller;
+        private readonly Mock<ILogger<TraiterDemandesController>> _loggerMock;
 
         public TraiterDemandesControllerTest()
         {
             _serviceMock = new Mock<IReapprovisionnementService>();
-            _controller = new TraiterDemandesController(_serviceMock.Object);
+            _loggerMock = new Mock<ILogger<TraiterDemandesController>>();
+            _controller = new TraiterDemandesController(_loggerMock.Object, _serviceMock.Object);
 
             var httpContext = new DefaultHttpContext();
             var tempDataProviderMock = new Mock<ITempDataProvider>();
@@ -30,11 +33,9 @@ namespace MagasinCentral.Tests.Controllers
         [Fact]
         public void Constructeur_NullService_ThrowsArgumentNullException()
         {
-            // Arrange
-            IReapprovisionnementService reapprovisionnementService = null!;
-
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new TraiterDemandesController(reapprovisionnementService));
+            Assert.Throws<ArgumentNullException>(() => new TraiterDemandesController(_loggerMock.Object, null!));
+            Assert.Throws<ArgumentNullException>(() => new TraiterDemandesController(null!, _serviceMock.Object));
         }
 
         [Fact]

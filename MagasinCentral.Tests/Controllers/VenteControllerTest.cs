@@ -1,15 +1,12 @@
 using MagasinCentral.Controllers;
 using MagasinCentral.Data;
-using MagasinCentral.Models;
 using MagasinCentral.Services;
-using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace MagasinCentral.Tests.Controllers
 {
-
-
     /// <summary>
     /// Tests unitaires pour le contrôleur VenteController.
     /// </summary>
@@ -18,11 +15,13 @@ namespace MagasinCentral.Tests.Controllers
         private readonly Mock<IVenteService> _venteServiceMock;
         private readonly Mock<IProduitService> _produitServiceMock;
         private readonly MagasinDbContext _contexte;
+        private readonly Mock<ILogger<VenteController>> _loggerMock;
 
         public VenteControllerTest()
         {
             _venteServiceMock = new Mock<IVenteService>();
             _produitServiceMock = new Mock<IProduitService>();
+            _loggerMock = new Mock<ILogger<VenteController>>();
 
             var options = new DbContextOptionsBuilder<MagasinDbContext>()
             .UseInMemoryDatabase(databaseName: "TestDb_For_Constructor")
@@ -33,9 +32,10 @@ namespace MagasinCentral.Tests.Controllers
         [Fact]
         public void Constructeur_NullServices_ThrowsArgumentNullException()
         {
-            Assert.Throws<ArgumentNullException>(() => new VenteController(null!, _produitServiceMock.Object, _contexte));
-            Assert.Throws<ArgumentNullException>(() => new VenteController(_venteServiceMock.Object, null!, _contexte));
-            Assert.Throws<ArgumentNullException>(() => new VenteController(_venteServiceMock.Object, _produitServiceMock.Object, null!));
+            Assert.Throws<ArgumentNullException>(() => new VenteController(null!, _venteServiceMock.Object, _produitServiceMock.Object, _contexte));
+            Assert.Throws<ArgumentNullException>(() => new VenteController(_loggerMock.Object, null!, _produitServiceMock.Object, _contexte));
+            Assert.Throws<ArgumentNullException>(() => new VenteController(_loggerMock.Object, _venteServiceMock.Object, null!, _contexte));
+            Assert.Throws<ArgumentNullException>(() => new VenteController(_loggerMock.Object, _venteServiceMock.Object, _produitServiceMock.Object, null!));
         }
 
     }
