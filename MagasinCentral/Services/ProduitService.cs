@@ -34,7 +34,9 @@ namespace MagasinCentral.Services
             return await _cache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
+                // On lit en NoTracking pour récupérer une instance détachée :
                 return _contexte.Produits
+                    .AsNoTracking()
                     .FirstOrDefaultAsync(p => p.ProduitId == produitId);
             });
         }
