@@ -38,6 +38,7 @@ namespace MagasinCentral.Api.Controllers
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public async Task<ActionResult<int>> GetStockMagasin(int magasinId)
         {
             try

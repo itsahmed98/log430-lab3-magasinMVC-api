@@ -114,6 +114,9 @@ builder.Services.AddCors(options =>
             .AllowCredentials());
 });
 
+builder.Services.AddResponseCaching();
+builder.Services.AddMemoryCache();
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -144,7 +147,7 @@ app.UseCors("AllowFrontend");
 
 app.UseHttpMetrics(); // Middleware pour les m�triques HTTP
 app.MapMetrics();
-
+app.UseResponseCaching();
 app.UseRouting();
 
 app.UseAuthentication();

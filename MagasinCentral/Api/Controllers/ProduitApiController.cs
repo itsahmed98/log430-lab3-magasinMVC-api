@@ -45,6 +45,7 @@ namespace MagasinCentral.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [HttpGet("{produitId:int}")]
+        [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public async Task<IActionResult> Produit(int produitId)
         {
             var produit = await _produitService.GetProduitByIdAsync(produitId);

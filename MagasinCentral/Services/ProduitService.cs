@@ -1,6 +1,7 @@
 using MagasinCentral.Data;
 using MagasinCentral.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace MagasinCentral.Services
 {
@@ -10,10 +11,12 @@ namespace MagasinCentral.Services
     public class ProduitService : IProduitService
     {
         private readonly MagasinDbContext _contexte;
+        private readonly IMemoryCache _cache;
 
-        public ProduitService(MagasinDbContext contexte)
+        public ProduitService(IMemoryCache cache, MagasinDbContext contexte)
         {
             _contexte = contexte ?? throw new ArgumentNullException(nameof(contexte));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
         /// <inheritdoc />
@@ -27,8 +30,13 @@ namespace MagasinCentral.Services
         /// <inheritdoc />
         public async Task<Produit?> GetProduitByIdAsync(int produitId)
         {
-            return await _contexte.Produits
-                .FirstOrDefaultAsync(p => p.ProduitId == produitId);
+            string key = $"produit_{produitId}";
+            return await _cache.GetOrCreateAsync(key, entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(1);
+                return _contexte.Produits
+                    .FirstOrDefaultAsync(p => p.ProduitId == produitId);
+            });
         }
 
         /// <inheritdoc />
@@ -45,6 +53,7 @@ namespace MagasinCentral.Services
 
             _contexte.Produits.Update(produit);
             await _contexte.SaveChangesAsync();
+            _cache.Remove($"produit_{produit.ProduitId}"); // Invalidate cache for this product
         }
 
         /// <inheritdoc />
