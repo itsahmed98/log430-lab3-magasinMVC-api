@@ -117,6 +117,7 @@ Cette application Web sert de gestion centralisée pour une chaîne de 4 magasin
 Application Web (ASP.NET Core MVC) :
 
 - Controllers/
+- Api/
 - Views/
 - wwwroot/
 - Services/
@@ -204,6 +205,98 @@ J'ai choisi de structurer l’application en 3 couches :
 - Facilite les tests unitaires indépendants de la console ou de la base de données.
 - Meilleure lisibilité et modularité du code.
 - Prépare l’architecture à une éventuelle migration vers une API ou une interface graphique.
+
+## ADR 003 – Exposition d’une API RESTful
+
+### Status
+
+Acceptée
+
+### Contexte
+
+Afin de préparer le système à des évolutions futures (interface web/mobile, microservices) et d'assurer une séparation claire entre la logique métier et la présentation, il est nécessaire d'exposer les fonctionnalités via une API RESTful.
+
+### Décision
+
+J’ai décidé d’ajouter une couche API RESTful au projet. Cette couche expose les opérations métier sous forme de routes HTTP standardisées, en respectant les principes REST :
+
+- Architecture sans état
+
+- Utilisation des verbes HTTP (GET, POST, PUT, DELETE, etc.)
+
+- Structure claire des routes : /api/ressource, /api/ressource/{id}, etc.
+
+- Documentation via Swagger/OpenAPI
+
+### Conséquences
+
+Permet l’intégration d’un front-end web ou mobile à l’avenir
+
+Facilite les tests via Swagger/Postman
+
+Sépare proprement la logique métier et l’interface utilisateur
+
+Prépare la transition vers des microservices si nécessaire
+
+## ADR 004 – Choix de l’outil de test de charge : Apache JMeter
+
+### Status
+
+Acceptée
+
+### Contexte
+
+Pour valider la robustesse et la scalabilité de l’API, il est nécessaire d’effectuer des tests de charge réalistes, en simulant plusieurs scénarios simultanés (consultation de stock, génération de rapport, mise à jour de produit).
+
+### Décision
+
+J’ai choisi Apache JMeter comme outil principal de test de charge, car il est :
+
+- Gratuit et open-source
+
+- Compatible avec HTTP et APIs REST
+
+- Facilement configurable avec des scénarios personnalisés
+
+- Compatible avec des environnements CI/CD
+
+##### Conséquences
+
+Possibilité d’automatiser les tests de charge dans la pipeline
+
+Visualisation graphique de la montée en charge
+
+Détection proactive des points de rupture et goulets d’étranglement
+
+## ADR 005 – Mise en place d’un Load Balancer : NGINX
+
+### Status
+
+Acceptée
+
+### Contexte
+
+Le système évolue vers une architecture plus scalable, avec plusieurs instances du backend tournant en parallèle. Il est nécessaire d’équilibrer la charge entre ces instances et d’assurer une tolérance aux pannes.
+
+### Décision
+
+J’ai choisi NGINX comme répartiteur de charge (load balancer) pour les raisons suivantes :
+
+- Léger, performant et largement utilisé
+
+- Facile à configurer via Docker
+
+- Supporte plusieurs stratégies de répartition : round-robin, least connections, etc.
+
+- Compatible avec les containers Docker dans un environnement local
+
+### Conséquences
+
+Amélioration de la tolérance aux pannes : les requêtes sont redirigées si une instance échoue
+
+Scalabilité horizontale : il est facile d’ajouter des instances derrière le proxy
+
+Tests comparatifs possibles sur les stratégies de load balancing
 
 # 10 Exigences de qualité
 

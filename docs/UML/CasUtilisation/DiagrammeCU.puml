@@ -15,6 +15,10 @@ rectangle "Magasin Central" {
     usecase UC3 as "UC3 - Visualiser performances\ndes magasins"
     usecase UC4 as "UC4 - Modifier produit"
     usecase UC6 as "UC6 - Approuver/refuser demande\nde réapprovisionnement"
+    usecase UC7 as "Rechercher produit"
+    usecase UC8 as "Enregistrer une vente"
+    usecase UC9 as "Gérer les retours"
+    usecase UC10 as "Consulter état du stock"
 }
 
 G --> UC1
@@ -22,4 +26,8 @@ E --> UC2
 G --> UC3
 R --> UC4
 R --> UC6
+E --> UC7
+E --> UC8
+E --> UC9
+E --> UC10
 @enduml

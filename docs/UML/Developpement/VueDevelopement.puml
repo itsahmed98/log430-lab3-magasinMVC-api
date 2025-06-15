@@ -85,10 +85,10 @@ package "MagasinCentral.Models (Domain)" as Models <<Layer>> {
 
 package "MagasinCentral.Api" as API <<Layer>> {
   [AuthController] <<Component>>
-  [PerformancesController] <<Component>>
-  [RapportController] <<Component>>
-  [ProduitController] <<Component>>
-  [StockController] <<Component>>
+  [PerformancesApiController] <<Component>>
+  [RapportApiController] <<Component>>
+  [ProduitApiController] <<Component>>
+  [StockApiController] <<Component>>
 }
 
 controller --> Services : <<use>>
@@ -112,7 +112,7 @@ MagasinDbContext --> Vente : <<mappe>>
 
 DataSeeder --> MagasinDbContext : <<alimente>>
 
-API --> Services : <<utilise>>
+API -> Services : <<utilise>>
 
 
 @enduml
