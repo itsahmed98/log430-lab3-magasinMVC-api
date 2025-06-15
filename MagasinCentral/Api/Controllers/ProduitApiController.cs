@@ -48,6 +48,8 @@ namespace MagasinCentral.Api.Controllers
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
         public async Task<IActionResult> Produit(int produitId)
         {
+            _logger.LogInformation("Récupération du produit ID={ProduitId}", produitId);
+
             var produit = await _produitService.GetProduitByIdAsync(produitId);
             if (produit == null)
             {

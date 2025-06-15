@@ -2,6 +2,8 @@ using MagasinCentral.Data;
 using MagasinCentral.Models;
 using MagasinCentral.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace MagasinCentral.Tests
 {
@@ -10,6 +12,12 @@ namespace MagasinCentral.Tests
     /// </summary>
     public class ReapprovisionnementServiceTest
     {
+        private ReapprovisionnementService CreateService(MagasinDbContext contexte)
+        {
+            var loggerMock = new Mock<ILogger<ReapprovisionnementService>>();
+            return new ReapprovisionnementService(contexte, loggerMock.Object);
+        }
+
         /// <summary>
         /// Test du constructeur du service de réapprovisionnement avec un contexte null.
         /// </summary>
@@ -18,15 +26,15 @@ namespace MagasinCentral.Tests
         {
             // Arrange
             MagasinDbContext contexte = null!;
+            var loggerMock = new Mock<ILogger<ReapprovisionnementService>>();
 
             // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new ReapprovisionnementService(contexte));
+            Assert.Throws<ArgumentNullException>(() => new ReapprovisionnementService(contexte, loggerMock.Object));
         }
 
         /// <summary>
         /// Test de la méthode GetStocksAsync pour vérifier qu'elle retourne les stocks correctement.
         /// </summary>
-        /// <returns></returns>
         [Fact]
         public async Task GetStocksAsync_ReturnsStocksCorrectement()
         {
@@ -42,7 +50,7 @@ namespace MagasinCentral.Tests
             contexte.StocksCentraux.Add(new StockCentral { ProduitId = 1, Quantite = 50 });
             await contexte.SaveChangesAsync();
 
-            var service = new ReapprovisionnementService(contexte);
+            var service = CreateService(contexte);
 
             // Act
             var stocks = await service.GetStocksAsync(1);
@@ -57,7 +65,6 @@ namespace MagasinCentral.Tests
         /// <summary>
         /// Test de la méthode CreerDemandeReapprovisionnementAsync pour vérifier qu'elle crée une demande correctement.
         /// </summary>
-        /// <returns></returns>
         [Fact]
         public async Task CreerDemandeReapprovisionnementAsync_ShouldCreatesDemandeCorrectement()
         {
@@ -71,7 +78,7 @@ namespace MagasinCentral.Tests
             contexte.Produits.Add(new Produit { ProduitId = 1, Nom = "Produit A" });
             await contexte.SaveChangesAsync();
 
-            var service = new ReapprovisionnementService(contexte);
+            var service = CreateService(contexte);
 
             // Act
             await service.CreerDemandeReapprovisionnementAsync(1, 1, 20);
@@ -85,7 +92,6 @@ namespace MagasinCentral.Tests
         /// <summary>
         /// Test de la méthode GetDemandesReapprovisionnementAsync pour vérifier qu'elle retourne toutes les demandes.
         /// </summary>
-        /// <returns></returns>
         [Fact]
         public async Task GetDemandesReapprovisionnementAsync_ShouldReturnAllDemandes()
         {
@@ -107,7 +113,7 @@ namespace MagasinCentral.Tests
             });
             await contexte.SaveChangesAsync();
 
-            var service = new ReapprovisionnementService(contexte);
+            var service = CreateService(contexte);
 
             // Act
             var demandes = await service.GetDemandesReapprovisionnementAsync();

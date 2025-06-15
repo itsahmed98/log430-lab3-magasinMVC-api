@@ -1,7 +1,8 @@
 using MagasinCentral.Data;
-using MagasinCentral.Models;
 using MagasinCentral.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace MagasinCentral.Tests
 {
@@ -33,13 +34,14 @@ namespace MagasinCentral.Tests
         {
             // Arrange
             var context = await CreateInMemoryContextAsync();
-            var service = new RapportService(context);
+            var loggerMock = new Mock<ILogger<RapportService>>();
+            var service = new RapportService(context, loggerMock.Object);
 
             // Act
             var listeRapports = await service.ObtenirRapportConsolideAsync();
 
             // Assert
-            Assert.Equal(5, listeRapports.Count);
+            Assert.Equal(5, listeRapports.Count); // 4 magasins + 1 stock central
             Assert.Contains(listeRapports, r => r.NomMagasin == "Stock Central");
         }
 
@@ -51,11 +53,12 @@ namespace MagasinCentral.Tests
         {
             // Arrange
             var context = await CreateInMemoryContextAsync();
-            var service = new RapportService(context);
+            var loggerMock = new Mock<ILogger<RapportService>>();
+            var service = new RapportService(context, loggerMock.Object);
 
             // Act
             var listeRapports = await service.ObtenirRapportConsolideAsync();
-            var rapportMagasin1 = listeRapports.First(r => r.NomMagasin == "Magasin Centre-Ville"); // Le premier magasin ajouté dans le seeder
+            var rapportMagasin1 = listeRapports.First(r => r.NomMagasin == "Magasin Centre-Ville");
 
             // Assert
             Assert.Equal(51.75m, rapportMagasin1.ChiffreAffairesTotal);
@@ -64,13 +67,13 @@ namespace MagasinCentral.Tests
         /// <summary>
         /// Vérifie que les stocks restants sont complets pour un magasin sans ventes.
         /// </summary>
-        /// <returns></returns>
         [Fact]
         public async Task GetRapportConsolideAsync_StocksRestantsCompletParMagasin()
         {
             // Arrange
             var context = await CreateInMemoryContextAsync();
-            var service = new RapportService(context);
+            var loggerMock = new Mock<ILogger<RapportService>>();
+            var service = new RapportService(context, loggerMock.Object);
 
             // Act
             var listeRapports = await service.ObtenirRapportConsolideAsync();

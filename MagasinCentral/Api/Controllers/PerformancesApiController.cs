@@ -36,6 +36,7 @@ namespace MagasinCentral.Api.Controllers
             try
             {
                 result = Ok(await _performancesService.GetPerformances());
+                _logger.LogInformation("Performances récupérées avec succès.");
             }
             catch (Exception ex)
             {

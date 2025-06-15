@@ -44,6 +44,7 @@ namespace MagasinCentral.Api.Controllers
             try
             {
                 result = Ok(await _rapportService.ObtenirRapportConsolideAsync());
+                _logger.LogInformation("Rapport consolidé récupéré avec succès.");
             }
             catch (Exception ex)
             {

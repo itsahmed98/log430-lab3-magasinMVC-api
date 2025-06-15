@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MagasinCentral.Data;
 using MagasinCentral.Models;
 using Microsoft.EntityFrameworkCore;
@@ -13,20 +10,25 @@ namespace MagasinCentral.Services
     public class RapportService : IRapportService
     {
         private readonly MagasinDbContext _contexte;
+        private readonly ILogger<RapportService> _logger;
 
         /// <summary>
-        /// Constructeur de <see cref="MagasinDbContext"/>.
+        /// Constructeur du service.
         /// </summary>
         /// <param name="contexte">Contexte EF Core.</param>
-        public RapportService(MagasinDbContext contexte)
+        /// <param name="logger">Logger.</param>
+        public RapportService(MagasinDbContext contexte, ILogger<RapportService> logger)
         {
-            _contexte = contexte;
+            _contexte = contexte ?? throw new ArgumentNullException(nameof(contexte));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <inheritdoc />
         public async Task<List<RapportDto>> ObtenirRapportConsolideAsync()
         {
-            // Charger tous les magasins, leurs ventes et les lignes de ventes + produits
+            _logger.LogInformation("Début de la génération du rapport consolidé...");
+
+            _logger.LogInformation("Chargement des magasins avec ventes et stocks...");
             var listeMagasins = await _contexte.Magasins
                 .Include(m => m.Ventes)
                     .ThenInclude(v => v.Lignes)
@@ -34,17 +36,19 @@ namespace MagasinCentral.Services
                 .Include(m => m.StocksProduits)
                     .ThenInclude(sp => sp.Produit)
                 .ToListAsync();
+            _logger.LogInformation("{Count} magasins chargés.", listeMagasins.Count);
 
             var rapports = new List<RapportDto>();
 
             foreach (var magasin in listeMagasins)
             {
-                // Calcul du CA = somme de toutes les lignes de toutes les ventes
+                _logger.LogInformation("Traitement du magasin : {NomMagasin}", magasin.Nom);
+
                 decimal chiffreAffaires = magasin.Ventes
                     .SelectMany(v => v.Lignes)
                     .Sum(l => l.Quantite * l.PrixUnitaire);
+                _logger.LogInformation("Chiffre d'affaires pour {NomMagasin} : {ChiffreAffaires:C}", magasin.Nom, chiffreAffaires);
 
-                // Top 3 produits par quantité vendue
                 var topProduits = magasin.Ventes
                     .SelectMany(v => v.Lignes)
                     .GroupBy(l => l.Produit)
@@ -58,7 +62,9 @@ namespace MagasinCentral.Services
                     .Take(3)
                     .ToList();
 
-                // Stocks restants local
+                _logger.LogInformation("Top 3 produits pour {NomMagasin} : {Produits}", magasin.Nom,
+                    string.Join(", ", topProduits.Select(p => $"{p.NomProduit} ({p.QuantiteVendue})")));
+
                 var stocksRestants = magasin.StocksProduits
                     .Select(sp => new InfosStockProduit
                     {
@@ -76,9 +82,11 @@ namespace MagasinCentral.Services
                 });
             }
 
+            _logger.LogInformation("Chargement du stock central...");
             var listeStockCentral = await _contexte.StocksCentraux
                 .Include(sc => sc.Produit)
                 .ToListAsync();
+            _logger.LogInformation("{Count} entrées de stock central chargées.", listeStockCentral.Count);
 
             rapports.Add(new RapportDto
             {
@@ -94,6 +102,7 @@ namespace MagasinCentral.Services
                     .ToList()
             });
 
+            _logger.LogInformation("Rapport consolidé généré avec succès.");
             return rapports;
         }
     }

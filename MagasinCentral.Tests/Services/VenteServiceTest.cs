@@ -1,6 +1,10 @@
 using MagasinCentral.Data;
+using MagasinCentral.Models;
 using MagasinCentral.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
+using Xunit;
 
 namespace MagasinCentral.Tests.Services
 {
@@ -14,15 +18,25 @@ namespace MagasinCentral.Tests.Services
 
             var context = new MagasinDbContext(options);
             await context.Database.EnsureDeletedAsync();
-            await context.Database.EnsureCreatedAsync();
+            await context.Database.EnsureCreatedAsync(); // Appelle la seed automatiquement
+
             return context;
+        }
+
+        private VenteService CreateService(MagasinDbContext context)
+        {
+            var loggerMock = new Mock<ILogger<VenteService>>();
+            return new VenteService(context, loggerMock.Object);
         }
 
         [Fact]
         public void Constructeur_NullDbContext_ThrowsArgumentNullException()
         {
-            // Arrange & Act & Assert
-            Assert.Throws<ArgumentNullException>(() => new VenteService(null!));
+            // Arrange
+            var loggerMock = new Mock<ILogger<VenteService>>();
+
+            // Act & Assert
+            Assert.Throws<ArgumentNullException>(() => new VenteService(null!, loggerMock.Object));
         }
 
         [Fact]
@@ -37,13 +51,20 @@ namespace MagasinCentral.Tests.Services
             };
 
             var context = await CreateInMemoryContextAsync();
-            var venteService = new VenteService(context);
+            var service = CreateService(context);
 
             // Act
-            var venteId = await venteService.CreerVenteAsync(magasinId, lignes);
+            var venteId = await service.CreerVenteAsync(magasinId, lignes);
 
             // Assert
             Assert.True(venteId > 0);
+
+            var vente = await context.Ventes
+                .Include(v => v.Lignes)
+                .FirstOrDefaultAsync(v => v.VenteId == venteId);
+
+            Assert.NotNull(vente);
+            Assert.Equal(2, vente.Lignes.Count);
         }
     }
 }

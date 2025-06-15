@@ -46,8 +46,11 @@ namespace MagasinCentral.Api.Controllers
                 int? quantite = await _stockService.GetStockByMagasinId(magasinId);
 
                 if (quantite == null)
+                {
+                    _logger.LogWarning("Stock non trouvé pour le magasin ID={MagasinId}", magasinId);
                     return NotFound();
-
+                }
+                _logger.LogInformation("Stock récupéré pour le magasin ID={MagasinId}: {Quantite}", magasinId, quantite.Value);
                 return quantite.Value;
             }
             catch (Exception ex)

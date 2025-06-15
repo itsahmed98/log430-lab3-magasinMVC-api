@@ -8,6 +8,9 @@ using MagasinCentral.Configuration;
 
 namespace MagasinCentral.Api.Controllers
 {
+    /// <summary>
+    /// Contrôleur pour l'authentification des utilisateurs.
+    /// </summary>
     [ApiController]
     [Route("api/v1/auth")]
     public class AuthController : ControllerBase
