@@ -24,6 +24,29 @@ services:
     depends_on:
       - db
   
+  postgres-produits:
+    image: postgres:15
+    container_name: magasincentral-produitservice-db
+    environment:
+      POSTGRES_DB: magasincentral-produits-db
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: "magasinpass"
+    volumes:
+      - pgdata_produits:/var/lib/postgresql/data
+
+  produits-service:
+    build:
+      context: ./produits-service/ProduitMcService
+      dockerfile: Dockerfile
+    image: magasincentral/produits-service:latest
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Production"
+      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=magasincentral-produits-db;Username=magasinuser;Password=magasinpass"
+    depends_on:
+      - postgres-produits
+
+  
+
   nginx:
     image: nginx:stable
     container_name: magasincentral-nginx
