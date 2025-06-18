@@ -7,7 +7,7 @@
         "Action": "Start"
       },
       {
-        "Path": "PerformancesMcService\\PerformancesMcService.csproj",
+        "Path": "VenteMcService\\VenteMcService.csproj",
         "Action": "Start"
       }
     ]

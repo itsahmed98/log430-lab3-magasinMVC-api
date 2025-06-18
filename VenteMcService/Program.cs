@@ -1,19 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using ProduitMcService.Data;
-using ProduitMcService.Services;
+using VenteMcService.Data;
+using VenteMcService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// 1. Configurer EF Core avec PostgreSQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ProduitDbContext>(options =>
+
+builder.Services.AddDbContext<VenteDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-builder.Services.AddScoped<IProduitService, ProduitService>();
-
+builder.Services.AddScoped<IVenteService, VenteService>();
 
 builder.Services.AddCors(options =>
 {
@@ -25,6 +24,12 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddHttpClient("ProduitMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7198/api/v1/produits");
+});
+
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -32,17 +37,18 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Produit Service API",
+        Title = "Vente Service API",
         Version = "v1",
-        Description = "API pour gérer les produits"
+        Description = "API pour gérer les ventes"
     });
 });
+
 
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<ProduitDbContext>();
+    var db = scope.ServiceProvider.GetRequiredService<VenteDbContext>();
     db.Database.Migrate();
 }
 
@@ -58,7 +64,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
-    app.UseExceptionHandler("/error");
+    app.UseExceptionHandler("/error");  
 }
 
 app.UseHttpsRedirection();
