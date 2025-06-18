@@ -29,6 +29,12 @@ builder.Services.AddHttpClient("PerformancesMcService", client =>
     client.BaseAddress = new Uri("https://localhost:7044/api/v1/performances");
 });
 
+builder.Services.AddHttpClient("VenteMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7184/api/v1/ventes");
+});
+
+
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {

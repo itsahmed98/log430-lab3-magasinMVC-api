@@ -1,4 +1,4 @@
-@model List<Vente>
+@model List<VenteDto>
 <h1>Liste des ventes</h1>
 <table class="table table-sm">
     <thead>
@@ -17,12 +17,12 @@
             <tr>
                 <td>@v.VenteId</td>
                 <td>@v.Date.ToString("g")</td>
-                <td>@v.Magasin.Nom</td>
+                <td>@v.MagasinId</td>
                 <td>
                     <ul>
                         @foreach (var l in v.Lignes)
                         {
-                            <li>@l.Produit.Nom × @l.Quantite = @((l.Quantite * l.PrixUnitaire).ToString("C"))</li>
+                            <li>@l.ProduitId × @l.Quantite = @((l.Quantite * l.PrixUnitaire).ToString("C"))</li>
                         }
                     </ul>
                 </td>

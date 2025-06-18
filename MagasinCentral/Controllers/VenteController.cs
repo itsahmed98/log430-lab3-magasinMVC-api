@@ -1,8 +1,13 @@
-using Microsoft.AspNetCore.Mvc;
-using MagasinCentral.Services;
 using MagasinCentral.Data;
-using Microsoft.EntityFrameworkCore;
 using MagasinCentral.Models;
+using MagasinCentral.Services;
+using MagasinCentral.ViewModels;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
 
 namespace MagasinCentral.Controllers;
 
@@ -11,10 +16,11 @@ namespace MagasinCentral.Controllers;
 /// </summary>
 public class VenteController : Controller
 {
-    private readonly IVenteService _venteService;
-    private readonly IProduitService _produitService;
     private readonly MagasinDbContext _contexte;
     private readonly ILogger<VenteController> _logger;
+    private readonly HttpClient _httpClientVente;
+    private readonly HttpClient _httpClientProduit;
+
 
     /// <summary>
     /// Constructeur pour initialiser les services nécessaires à la gestion des ventes.
@@ -22,10 +28,13 @@ public class VenteController : Controller
     /// <param name="venteService"></param>
     /// <param name="produitService"></param>
     /// <exception cref="ArgumentNullException"></exception>
-    public VenteController(ILogger<VenteController> logger, IVenteService venteService, IProduitService produitService, MagasinDbContext contexte)
+    public VenteController(ILogger<VenteController> logger, 
+        IHttpClientFactory httpClientFactoryVente,
+        IHttpClientFactory httpClientFactoryProduit, 
+        MagasinDbContext contexte)
     {
-        _venteService = venteService ?? throw new ArgumentNullException(nameof(venteService));
-        _produitService = produitService ?? throw new ArgumentNullException(nameof(produitService));
+        _httpClientVente = httpClientFactoryVente?.CreateClient("VenteMcService") ?? throw new ArgumentNullException(nameof(httpClientFactoryVente));
+        _httpClientProduit = httpClientFactoryProduit?.CreateClient("ProduitMcService") ?? throw new ArgumentNullException(nameof(httpClientFactoryProduit));
         _contexte = contexte ?? throw new ArgumentNullException(nameof(contexte));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
@@ -36,10 +45,29 @@ public class VenteController : Controller
     /// <param name="magasinId"></param>
     public async Task<IActionResult> Enregistrer(int? magasinId)
     {
-        ViewData["Magasins"] = await _contexte.Magasins.ToListAsync();
-        ViewData["MagasinId"] = magasinId ?? 0;
-        var produits = await _produitService.GetAllProduitsAsync();
-        return View(produits);
+        // Récupère la liste des magasins pour un <select>
+        var magasins = await _contexte.Magasins
+            .Select(m => new { m.MagasinId, m.Nom })
+            .ToListAsync();
+        ViewBag.Magasins = new SelectList(magasins, "MagasinId", "Nom");
+
+        // Récupère la liste des produits pour un <select>
+        var responseP = await _httpClientProduit.GetAsync("");
+        var produits = await responseP.Content.ReadFromJsonAsync<List<ProduitDto>>();
+        ViewBag.Produits = new SelectList(produits, "ProduitId", "Nom");
+
+        // Initialise le ViewModel
+        var vm = new VenteCreateViewModel
+        {
+            MagasinId = magasinId ?? 0,
+            Lignes = new List<LigneViewModel>
+        {
+            new LigneViewModel(),
+            new LigneViewModel()
+        }
+        };
+
+        return View(vm);
     }
 
     /// <summary>
@@ -49,23 +77,50 @@ public class VenteController : Controller
     /// <param name="produitId"></param>
     /// <param name="quantite"></param>
     [HttpPost, ValidateAntiForgeryToken]
-    public async Task<IActionResult> Enregistrer(int magasinId, List<int> produitId, List<int> quantite)
+    public async Task<IActionResult> Enregistrer(VenteCreateViewModel vm)
     {
-        if (magasinId <= 0)
-            return BadRequest("Magasin invalide, veuillez en sélectionner un.");
+        // Re-peupler les listes en cas de retour à la vue
+        var magasins = await _contexte.Magasins
+            .Select(m => new { m.MagasinId, m.Nom })
+            .ToListAsync();
+        ViewBag.Magasins = new SelectList(magasins, "MagasinId", "Nom");
+        var responseP = await _httpClientProduit.GetAsync("");
+        var produits = await responseP.Content.ReadFromJsonAsync<List<ProduitDto>>();
+        ViewBag.Produits = new SelectList(produits, "ProduitId", "Nom");
 
-        var lignes = produitId
-            .Select((id, i) => (id, quantite[i]))
-            .Where(x => x.Item2 > 0)
-            .ToList();
-        if (!lignes.Any())
+        if (!ModelState.IsValid)
+            return View(vm);
+
+        // Construire le payload JSON que la micro-API attend
+        var payload = new
         {
-            TempData["Erreur"] = "Veuillez sélectionner au moins 1 produit.";
-            return RedirectToAction(nameof(Enregistrer), new { magasinId });
+            MagasinId = vm.MagasinId,
+            Date = DateTime.UtcNow,
+            Lignes = vm.Lignes
+                              .Where(l => l.Quantite > 0)
+                              .Select(l => new {
+                                  ProduitId = l.ProduitId,
+                                  Quantite = l.Quantite
+                              })
+                              .ToList()
+        };
+
+        var response = await _httpClientVente
+            .PostAsJsonAsync("", payload);
+
+        if (response.IsSuccessStatusCode)
+        {
+            // Récupérer l’ID créé
+            var created = await response.Content.ReadFromJsonAsync<JsonElement>();
+            int venteId = created.GetProperty("venteId").GetInt32();
+            TempData["Succès"] = $"Vente #{venteId} créée.";
+            return RedirectToAction(nameof(Liste));
         }
-        var venteId = await _venteService.CreerVenteAsync(magasinId, lignes);
-        TempData["Succès"] = $"Vente #{venteId} créée.";
-        return RedirectToAction(nameof(Liste));
+
+        // En cas d’erreur, afficher le message
+        var error = await response.Content.ReadAsStringAsync();
+        ModelState.AddModelError("", $"API Erreur : {error}");
+        return View(vm);
     }
 
     /// <summary>
@@ -76,16 +131,18 @@ public class VenteController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Retour(int venteId)
     {
-        try
+        var response = await _httpClientVente.DeleteAsync($"{_httpClientVente.BaseAddress}/{venteId}");
+
+        if (response.IsSuccessStatusCode)
         {
-            await _venteService.AnnulerVenteAsync(venteId);
-            TempData["Succès"] = "Vente annulée et stock restitué.";
+            TempData["Succès"] = "Vente annulée avec succès.";
         }
-        catch (Exception ex)
+        else
         {
-            TempData["Erreur"] = ex.Message;
+            TempData["Erreur"] = "Erreur lors de l’annulation de la vente.";
         }
-        return RedirectToAction("Liste", "Vente");
+
+        return RedirectToAction(nameof(Liste));
     }
 
     /// <summary>
@@ -93,7 +150,16 @@ public class VenteController : Controller
     /// </summary>
     public async Task<IActionResult> Liste()
     {
-        List<Vente> ventes = await _venteService.GetVentesAsync();
+        var response = await _httpClientVente.GetAsync("");
+        if (!response.IsSuccessStatusCode)
+        {
+            TempData["Erreur"] = "Impossible de charger les ventes.";
+            return View(new List<VenteDto>());
+        }
+
+        var json = await response.Content.ReadAsStringAsync();
+        var ventes = JsonSerializer.Deserialize<List<VenteDto>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
         return View(ventes);
     }
 

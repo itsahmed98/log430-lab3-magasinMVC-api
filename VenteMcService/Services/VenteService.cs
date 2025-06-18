@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using VenteMcService.Data;
 using VenteMcService.Models;
 
@@ -20,41 +21,26 @@ namespace VenteMcService.Services
         /// <inheritdoc/> 
         public async Task<Vente> CreateAsync(Vente vente)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
-            try
+            foreach (var ligneDto in vente.Lignes)
             {
-                foreach (var ligne in vente.Lignes)
+                var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/{ligneDto.ProduitId}");
+                if (!response.IsSuccessStatusCode)
+                    throw new Exception($"Produit {ligneDto.ProduitId} non trouvé.");
+
+                var json = await response.Content.ReadAsStringAsync();
+                var produit = JsonSerializer.Deserialize<ProduitDto>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                vente.Lignes.Add(new LigneVente
                 {
-                    var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/{ligne.ProduitId}");
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        throw new InvalidOperationException($"Produit ID={ligne.ProduitId} introuvable.");
-                    }
-                }
-
-                var lignes = vente.Lignes.ToList();
-                vente.Lignes.Clear();
-
-                _context.Ventes.Add(vente);
-                await _context.SaveChangesAsync();
-
-                foreach (var ligne in lignes)
-                {
-                    ligne.VenteId = vente.VenteId;
-                    _context.LignesVente.Add(ligne);
-                }
-                await _context.SaveChangesAsync();
-
-                await transaction.CommitAsync();
-
-                return await GetByIdAsync(vente.VenteId) ?? vente;
+                    ProduitId = ligneDto.ProduitId,
+                    Quantite = ligneDto.Quantite,
+                    PrixUnitaire = produit.Prix
+                });
             }
-            catch (Exception ex)
-            {
-                await transaction.RollbackAsync();
-                _logger.LogError(ex, "Erreur lors de la création de la vente.");
-                throw;
-            }
+
+            _context.Ventes.Add(vente);
+            await _context.SaveChangesAsync();
+            return vente;
         }
 
         /// <inheritdoc/> 

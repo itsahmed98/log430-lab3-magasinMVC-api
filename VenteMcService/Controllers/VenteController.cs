@@ -84,7 +84,6 @@ namespace VenteMcService.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erreur lors de la création de la vente.");
-                // Si validation métier échoue, on peut renvoyer BadRequest avec message.
                 return StatusCode(500, new { message = ex.Message });
             }
         }
