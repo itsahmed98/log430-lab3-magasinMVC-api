@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36127.28 d17.14
+VisualStudioVersion = 17.14.36127.28
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagasinCentral", "MagasinCentral\MagasinCentral.csproj", "{B42A2BB1-A7AD-4689-B795-629B16FAE538}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagasinCentral.Tests", "MagasinCentral.Tests\MagasinCentral.Tests.csproj", "{5120D633-E62A-4D21-A080-D4CE05ECF0B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProduitMcService", "ProduitMcService\ProduitMcService.csproj", "{7E3374B0-43EC-41AA-B7E6-3D3336BA2B60}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProduitMcService.Test", "ProduitMcService.Test\ProduitMcService.Test.csproj", "{CE3EF04F-64B1-4629-8A12-CCB5E95807FA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{5120D633-E62A-4D21-A080-D4CE05ECF0B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5120D633-E62A-4D21-A080-D4CE05ECF0B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5120D633-E62A-4D21-A080-D4CE05ECF0B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E3374B0-43EC-41AA-B7E6-3D3336BA2B60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E3374B0-43EC-41AA-B7E6-3D3336BA2B60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E3374B0-43EC-41AA-B7E6-3D3336BA2B60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E3374B0-43EC-41AA-B7E6-3D3336BA2B60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE3EF04F-64B1-4629-8A12-CCB5E95807FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE3EF04F-64B1-4629-8A12-CCB5E95807FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE3EF04F-64B1-4629-8A12-CCB5E95807FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE3EF04F-64B1-4629-8A12-CCB5E95807FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
