@@ -38,5 +38,12 @@ namespace ProduitMcService.Services
         /// </summary>
         /// <param name="id"></param>
         Task DeleteAsync(int id);
+
+        /// <summary>
+        /// Rechercher un produit
+        /// </summary>
+        /// <param name="terme"></param>
+        /// <returns></returns>
+        Task<IEnumerable<Produit>> RechercherAsync(string terme);
     }
 }

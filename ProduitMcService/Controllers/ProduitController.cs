@@ -114,5 +114,19 @@ namespace ProduitMcService.Controllers
                 return NotFound(new { message = knf.Message });
             }
         }
+
+        /// <summary>
+        /// Recherche de produits par nom ou catégorie.
+        /// </summary>
+        /// <param name="terme">Mot-clé à rechercher.</param>
+        /// <returns>Liste des produits correspondants.</returns>
+        // GET: api/v1/produits/recherche?terme=xyz
+        [HttpGet("recherche")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> Rechercher([FromQuery] string terme)
+        {
+            var resultat = await _produitService.RechercherAsync(terme);
+            return Ok(resultat);
+        }
     }
 }

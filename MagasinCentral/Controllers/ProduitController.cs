@@ -1,7 +1,7 @@
-using MagasinCentral.Services;
-using MagasinCentral.ViewModels;
-using Microsoft.AspNetCore.Mvc;
 using MagasinCentral.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Text;
+using System.Text.Json;
 
 namespace MagasinCentral.Controllers
 {
@@ -11,12 +11,12 @@ namespace MagasinCentral.Controllers
     public class ProduitController : Controller
     {
         private readonly ILogger<ProduitController> _logger;
-        private readonly IProduitService _produitService;
+        private readonly HttpClient _httpClient;
 
-        public ProduitController(ILogger<ProduitController> logger, IProduitService produitService)
+        public ProduitController(ILogger<ProduitController> logger, IHttpClientFactory httpClientFactory)
         {
-            _produitService = produitService ?? throw new ArgumentNullException(nameof(produitService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _httpClient = httpClientFactory?.CreateClient("ProduitMcService") ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
         /// <summary>
@@ -24,21 +24,19 @@ namespace MagasinCentral.Controllers
         /// </summary>
         public async Task<IActionResult> Index()
         {
-            IActionResult? result = null;
-            _logger.LogInformation("Tentative de récupération des produits...");
-
-            try
+            _logger.LogInformation("Requête de récupération de la liste des produits envoyée.");
+            var response = await _httpClient.GetAsync("");
+            if (!response.IsSuccessStatusCode)
             {
-                var model = await _produitService.GetAllProduitsAsync();
-                result = View(model);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Une erreur s'est produite lors de la récupération des produits.");
-                result = View("Error");
+                _logger.LogError("Échec de la récupération des produits. Code HTTP : {StatusCode}", response.StatusCode);
+                return View("Error");
             }
 
-            return result;
+            var content = await response.Content.ReadAsStringAsync();
+            var produits = JsonSerializer.Deserialize<List<ProduitDto>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            _logger.LogInformation("{Count} produits récupérés avec succès.", produits?.Count ?? 0);
+            return View(produits);
         }
 
         /// <summary>
@@ -47,24 +45,20 @@ namespace MagasinCentral.Controllers
         /// <param name="produitId"></param>
         public async Task<IActionResult> Modifier(int produitId)
         {
-            IActionResult? result = null;
+            _logger.LogInformation("Requête pour modifier le produit ID : {ProduitId}", produitId);
+            var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/{produitId}");
 
-            try
+            if (!response.IsSuccessStatusCode)
             {
-                var produit = await _produitService.GetProduitByIdAsync(produitId);
-                if (produit == null)
-                {
-                    result = NotFound($"Produit avec ID={produitId} non trouvé.");
-                }
-                result = View(produit);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erreur lors de la récupération du produit pour modification.");
-                result = View("Error");
+                _logger.LogWarning("Produit ID {ProduitId} non trouvé. Code HTTP : {StatusCode}", produitId, response.StatusCode);
+                return NotFound();
             }
 
-            return result;
+            var content = await response.Content.ReadAsStringAsync();
+            var produit = JsonSerializer.Deserialize<ProduitDto>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            _logger.LogInformation("Produit ID {ProduitId} récupéré pour modification.", produitId);
+            return View(produit);
         }
 
         /// <summary>
@@ -72,33 +66,28 @@ namespace MagasinCentral.Controllers
         /// </summary>
         /// <param name="produit"></param>
         [HttpPost]
-        [HttpPost]
-        public async Task<IActionResult> Modifier(Produit produit)
+        public async Task<IActionResult> Modifier(ProduitDto produit)
         {
-            IActionResult? result = null;
-
-            _logger.LogInformation("Début de la modification du produit avec l'ID {ProduitId}.", produit.ProduitId);
-
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Le modèle pour le produit ID {ProduitId} est invalide.", produit.ProduitId);
-                result = View(produit);
+                _logger.LogWarning("Échec de validation du formulaire pour le produit ID : {ProduitId}", produit.ProduitId);
+                return View(produit);
             }
 
-            try
+            _logger.LogInformation("Envoi des données modifiées pour le produit ID : {ProduitId}", produit.ProduitId);
+            var json = JsonSerializer.Serialize(produit);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync($"{_httpClient.BaseAddress}/{produit.ProduitId}", content);
+            if (!response.IsSuccessStatusCode)
             {
-                await _produitService.ModifierProduitAsync(produit);
-                TempData["Succès"] = $"Le produit « {produit.Nom} » a bien été mis à jour.";
-                _logger.LogInformation("Le produit ID {ProduitId} a été mis à jour avec succès.", produit.ProduitId);
-                result = RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erreur lors de la mise à jour du produit ID {ProduitId}.", produit.ProduitId);
-                result = View("Error");
+                _logger.LogError("Échec de la mise à jour du produit ID : {ProduitId}. Code HTTP : {StatusCode}", produit.ProduitId, response.StatusCode);
+                return View("Error");
             }
 
-            return result;
+            _logger.LogInformation("Produit ID : {ProduitId} mis à jour avec succès.", produit.ProduitId);
+            TempData["Succès"] = $"Le produit « {produit.Nom} » a bien été mis à jour.";
+            return RedirectToAction(nameof(Index));
         }
 
         /// <summary>
@@ -108,31 +97,20 @@ namespace MagasinCentral.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Recherche(string produit)
         {
-            IActionResult? result = null;
+            _logger.LogInformation("Recherche de produits avec le terme : {Terme}", produit);
+            var searchResponse = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/recherche?terme={produit}");
 
-            _logger.LogInformation("Recherche initiée pour le produit : {produit}.", produit);
-
-            if (string.IsNullOrWhiteSpace(produit))
+            if (!searchResponse.IsSuccessStatusCode)
             {
-                _logger.LogWarning("Recherche annulée : le terme de recherche est vide ou nul.");
-                result = View(new List<Produit>());
+                _logger.LogWarning("La recherche pour le terme {Terme} a échoué. Code HTTP : {StatusCode}", produit, searchResponse.StatusCode);
+                return View(new List<ProduitDto>());
             }
 
-            try
-            {
-                var résultats = await _produitService.RechercherProduitsAsync(produit);
-                _logger.LogInformation("{Nombre} résultats trouvés pour le terme : {Terme}.", résultats.Count(), produit);
+            var searchContent = await searchResponse.Content.ReadAsStringAsync();
+            var results = JsonSerializer.Deserialize<List<ProduitDto>>(searchContent, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                ViewData["Terme"] = produit;
-                result = View(résultats);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erreur lors de la recherche du produit: {produit}", produit);
-                return View(new List<Produit>());
-            }
-
-            return result;
+            _logger.LogInformation("{Count} résultats trouvés pour le terme : {Terme}", results?.Count ?? 0, produit);
+            return View(results);
         }
     }
 }

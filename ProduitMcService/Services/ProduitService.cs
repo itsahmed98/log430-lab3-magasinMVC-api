@@ -82,5 +82,17 @@ namespace ProduitMcService.Services
             await _context.SaveChangesAsync();
             _logger.LogInformation("Produit avec ID {Id} supprimé avec succès.", id);
         }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<Produit>> RechercherAsync(string terme)
+        {
+            terme = terme.ToLower();
+
+            return await _context.Produits
+                .Where(p =>
+                    p.Nom.ToLower().Contains(terme) ||
+                    (p.Categorie != null && p.Categorie.ToLower().Contains(terme)))
+                .ToListAsync();
+        }
     }
 }

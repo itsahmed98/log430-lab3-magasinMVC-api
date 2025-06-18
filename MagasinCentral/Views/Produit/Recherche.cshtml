@@ -1,4 +1,4 @@
-@model List<Produit>
+@model List<ProduitDto>
 @{
     ViewData["Title"] = "Recherche de produits";
     var terme = (string)(ViewData["Terme"] ?? "");
@@ -25,6 +25,7 @@ else
                 <th>Nom</th>
                 <th>Catégorie</th>
                 <th>Prix</th>
+                <th>Description</th>
             </tr>
         </thead>
         <tbody>
@@ -35,6 +36,7 @@ else
                     <td>@p.Nom</td>
                     <td>@p.Categorie</td>
                     <td>@p.Prix.ToString("C")</td>
+                    <td>@p.Description</td>
                 </tr>
             }
         </tbody>

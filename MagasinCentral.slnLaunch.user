@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "MagasinCentral\\MagasinCentral.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "ProduitMcService\\ProduitMcService.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
