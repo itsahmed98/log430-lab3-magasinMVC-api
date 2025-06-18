@@ -26,6 +26,7 @@ namespace ProduitMcService.Test.UnitTests.Services
             _service = new ProduitService(loggerMock.Object, _context);
         }
 
+        [Fact]
         public void Constructeur_ShouldThrowArgumentNullException()
         {
             var loggerMock = new Mock<ILogger<ProduitService>>();

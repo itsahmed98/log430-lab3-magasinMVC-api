@@ -14,8 +14,8 @@ namespace ProduitMcService.Services
 
         public ProduitService(ILogger<ProduitService> logger, ProduitDbContext context)
         {
-            _context = context;
-            _logger = logger;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <inheritdoc/>

@@ -1,5 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.Logging;
+using Moq;
+using ProduitMcService.Controllers;
 using ProduitMcService.Models;
+using ProduitMcService.Services;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -16,6 +20,16 @@ namespace ProduitMcService.Test.UnitTests.Controllers
         public ProduitControllerTest(WebApplicationFactory<Program> factory)
         {
             _client = factory.CreateClient();
+        }
+
+        [Fact]
+        public void Constructor_ShouldThrowArgumentNullException_WhenHttpClientFactoryIsNull()
+        {
+            var ILoggerMock = new Mock<ILogger<ProduitController>>();
+            var IProduitServiceMock = new Mock<IProduitService>();
+
+            Assert.Throws<ArgumentNullException>(() => new ProduitController(null!, IProduitServiceMock.Object));
+            Assert.Throws<ArgumentNullException>(() => new ProduitController(ILoggerMock.Object, null!));
         }
 
         [Fact]

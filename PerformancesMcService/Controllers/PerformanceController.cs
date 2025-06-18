@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using PerformancesMcService.Models;
 using PerformancesMcService.Services;
 
 namespace PerformancesMcService.Controllers
@@ -11,10 +10,10 @@ namespace PerformancesMcService.Controllers
         private readonly IPerformanceService _performanceService;
         private readonly ILogger<PerformanceController> _logger;
 
-        public PerformanceController(IPerformanceService performanceService, ILogger<PerformanceController> logger)
+        public PerformanceController(ILogger<PerformanceController> logger, IPerformanceService performanceService)
         {
-            _performanceService = performanceService;
-            _logger = logger;
+            _performanceService = performanceService ?? throw new ArgumentNullException(nameof(performanceService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -25,7 +24,9 @@ namespace PerformancesMcService.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
+            _logger.LogInformation("Récupération de toutes les performances.");
             var list = await _performanceService.GetAllPerformancesAsync();
+            _logger.LogInformation("{Count} performances récupérées.", list.Count());
             return Ok(list);
         }
     }

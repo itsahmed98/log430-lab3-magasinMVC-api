@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProduitMcService.Tests", "P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformancesMcService", "PerformancesMcService\PerformancesMcService.csproj", "{E42F9FD9-057E-4ABD-BBB4-447D2E7B922C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformancesMcService.Test", "PerformancesMcService.Test\PerformancesMcService.Test.csproj", "{4557C2E6-FD62-4718-AE45-4C51C41D2C9A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{E42F9FD9-057E-4ABD-BBB4-447D2E7B922C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E42F9FD9-057E-4ABD-BBB4-447D2E7B922C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E42F9FD9-057E-4ABD-BBB4-447D2E7B922C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4557C2E6-FD62-4718-AE45-4C51C41D2C9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4557C2E6-FD62-4718-AE45-4C51C41D2C9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4557C2E6-FD62-4718-AE45-4C51C41D2C9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4557C2E6-FD62-4718-AE45-4C51C41D2C9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

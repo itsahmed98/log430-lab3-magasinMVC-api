@@ -11,16 +11,20 @@ namespace PerformancesMcService.Services
 
         public PerformanceService(ILogger<PerformanceService> logger, PerformanceDbContext context)
         {
-            _context = context;
-            _logger = logger;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <inheritdoc/>
         public async Task<IEnumerable<Performance>> GetAllPerformancesAsync()
         {
-            return await _context.Performances
+            _logger.LogInformation("Accès à la base de données pour récupérer les performances.");
+            var result = await _context.Performances
                 .AsNoTracking()
                 .ToListAsync();
+
+            _logger.LogInformation("Récupération terminée : {Count} enregistrements trouvés.", result.Count);
+            return result;
         }
     }
 }
