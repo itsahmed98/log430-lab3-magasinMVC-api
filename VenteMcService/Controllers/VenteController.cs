@@ -11,10 +11,10 @@ namespace VenteMcService.Controllers
         private readonly IVenteService _venteService;
         private readonly ILogger<VenteController> _logger;
 
-        public VenteController(IVenteService venteService, ILogger<VenteController> logger)
+        public VenteController(ILogger<VenteController> logger, IVenteService venteService)
         {
-            _venteService = venteService;
-            _logger = logger;
+            _venteService = venteService ?? throw new ArgumentNullException(nameof(venteService));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -26,7 +26,9 @@ namespace VenteMcService.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
+            _logger.LogInformation("Requête GET - Récupération de toutes les ventes.");
             var list = await _venteService.GetAllAsync();
+            _logger.LogInformation("{Count} ventes récupérées.", list.Count);
             return Ok(list);
         }
 
@@ -41,9 +43,14 @@ namespace VenteMcService.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(int id)
         {
+            _logger.LogInformation("Requête GET - Vente ID {Id}", id);
             var v = await _venteService.GetByIdAsync(id);
             if (v == null)
+            {
+                _logger.LogWarning("Vente ID {Id} non trouvée.", id);
                 return NotFound(new { message = $"Vente ID={id} non trouvé." });
+            }
+            _logger.LogInformation("Vente ID {Id} trouvée.", id);
             return Ok(v);
         }
 
@@ -52,7 +59,9 @@ namespace VenteMcService.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetByMagasin(int magasinId)
         {
+            _logger.LogInformation("Requête GET - Ventes pour magasin ID {MagasinId}", magasinId);
             var list = await _venteService.GetByMagasinAsync(magasinId);
+            _logger.LogInformation("{Count} ventes trouvées pour magasin ID {MagasinId}", list.Count, magasinId);
             return Ok(list);
         }
 
@@ -74,11 +83,16 @@ namespace VenteMcService.Controllers
         public async Task<IActionResult> Create([FromBody] Vente vente)
         {
             if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Modèle invalide pour la création de vente : {@Vente}", vente);
                 return BadRequest(ModelState);
+            }
 
             try
             {
+                _logger.LogInformation("Création d’une vente : {@Vente}", vente);
                 var created = await _venteService.CreateAsync(vente);
+                _logger.LogInformation("Vente créée avec ID {Id}", created.VenteId);
                 return CreatedAtAction(nameof(GetById), new { id = created.VenteId }, created);
             }
             catch (Exception ex)
@@ -101,11 +115,14 @@ namespace VenteMcService.Controllers
         {
             try
             {
+                _logger.LogInformation("Suppression de la vente ID {Id}", id);
                 await _venteService.DeleteAsync(id);
+                _logger.LogInformation("Vente ID {Id} supprimée avec succès.", id);
                 return NoContent();
             }
             catch (KeyNotFoundException knf)
             {
+                _logger.LogWarning("Vente ID {Id} introuvable pour suppression.", id);
                 return NotFound(new { message = knf.Message });
             }
             catch (Exception ex)
