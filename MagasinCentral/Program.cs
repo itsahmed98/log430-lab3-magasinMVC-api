@@ -34,6 +34,22 @@ builder.Services.AddHttpClient("VenteMcService", client =>
     client.BaseAddress = new Uri("https://localhost:7184/api/v1/ventes");
 });
 
+builder.Services.AddHttpClient("MagasinMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7013/api/v1/magasins");
+});
+
+builder.Services.AddHttpClient("StockMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7185");
+});
+
+builder.Services.AddHttpClient("RapportMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7214/api/v1/rapports");
+});
+
+
 
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
@@ -76,7 +92,6 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-builder.Services.AddScoped<IRapportService, RapportService>();
 builder.Services.AddScoped<IReapprovisionnementService, ReapprovisionnementService>();
 builder.Services.AddScoped<IPerformancesService, PerformancesService>();
 builder.Services.AddScoped<IProduitService, ProduitService>();

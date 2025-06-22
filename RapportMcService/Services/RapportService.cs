@@ -60,6 +60,7 @@ namespace RapportMcService.Services
 
                 _logger.LogInformation("Calcul des ventes par magasin...");
                 var ventesParMagasin = ventes
+                    .Where(v => v.MagasinId != 0)
                     .GroupBy(v => v.MagasinId)
                     .Select(g => new VenteParMagasinDto
                     {
@@ -71,6 +72,7 @@ namespace RapportMcService.Services
 
                 _logger.LogInformation("Détermination des produits les plus vendus...");
                 var produitsLesPlusVendus = ventes
+                    .Where(v => v.MagasinId != 0)
                     .SelectMany(v => v.Lignes)
                     .GroupBy(l => l.ProduitId)
                     .Select(g => new ProduitLePlusVenduDto
@@ -85,6 +87,7 @@ namespace RapportMcService.Services
 
                 _logger.LogInformation("Préparation des stocks restants...");
                 var stocksRestants = stocks
+                    .Where(s => s.MagasinId != 0)
                     .Select(s => new StockDto
                     {
                         MagasinId = s.MagasinId,
