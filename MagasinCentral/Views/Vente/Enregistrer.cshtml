@@ -1,72 +1,47 @@
-@model MagasinCentral.ViewModels.VenteCreateViewModel
+@model VenteCreateViewModel
 @using Microsoft.AspNetCore.Mvc.Rendering
 
 @{
     ViewData["Title"] = "Enregistrer une vente";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h2>@ViewData["Title"]</h2>
 
-<form asp-action="Enregistrer" asp-controller="Vente" method="post">
-    <!-- 1) Sélecteur de magasin toujours là -->
+<form asp-action="Enregistrer" method="post">
     <div class="form-group">
         <label asp-for="MagasinId"></label>
-        <select asp-for="MagasinId"
-                class="form-control"
-                asp-items="(SelectList)ViewBag.Magasins">
+        <select asp-for="MagasinId" class="form-control" asp-items="(SelectList)ViewBag.Magasins">
             <option value="">-- Choisir un magasin --</option>
         </select>
         <span asp-validation-for="MagasinId" class="text-danger"></span>
     </div>
 
-    <h3>Lignes de vente</h3>
-
-    <!-- 2) Template caché pour le JS -->
-    <div id="ligne-template" style="display:none">
-        @Html.EditorFor(m => m.Lignes[0])
+    <h4>Lignes de vente</h4>
+    <div class="mb-2">
+        <button type="submit" name="action" value="add" class="btn btn-secondary">+ Ajouter une ligne</button>
     </div>
 
-    <!-- 3) Container pour les lignes existantes et dynamiques -->
-    <div id="lignesContainer">
-        @for (int i = 0; i < Model.Lignes.Count; i++)
-        {
-            @Html.EditorFor(m => m.Lignes[i])
-        }
-    </div>
+    @for (int i = 0; i < Model.Lignes.Count; i++)
+    {
+        <div class="row mb-3 border p-2">
+            <div class="col-md-6">
+                <label asp-for="Lignes[i].ProduitId"></label>
+                <select asp-for="Lignes[i].ProduitId" class="form-control" asp-items="(SelectList)ViewBag.Produits">
+                    <option value="">-- Choisir un produit --</option>
+                </select>
+                <span asp-validation-for="Lignes[i].ProduitId" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Lignes[i].Quantite"></label>
+                <input asp-for="Lignes[i].Quantite" class="form-control" />
+                <span asp-validation-for="Lignes[i].Quantite" class="text-danger"></span>
+            </div>
+        </div>
+    }
 
-    <!-- 4) Boutons d'ajout et de soumission -->
-    <button type="button" id="addLigne" class="btn btn-link mb-3">
-        + Ajouter une ligne
-    </button>
-    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <button type="submit" class="btn btn-primary">Enregistrer la vente</button>
 </form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-    <script>
-    (function(){
-      const container   = document.getElementById('lignesContainer');
-      const rawTemplate = document.getElementById('ligne-template').innerHTML;
-      let index = @Model.Lignes.Count;
-
-      // Ajouter une ligne
-      document.getElementById('addLigne')
-        .addEventListener('click', () => {
-          // remplace tous les "Lignes[0]" par "Lignes[index]"
-          const html = rawTemplate.replaceAll("Lignes[0]", `Lignes[${index}]`);
-          index++;
-          const wrapper = document.createElement('div');
-          wrapper.innerHTML = html;
-          container.appendChild(wrapper);
-        });
-
-      // Supprimer une ligne
-      container.addEventListener('click', e => {
-        if (e.target.matches('.remove-ligne')) {
-          e.target.closest('.ligne-form').remove();
-        }
-      });
-    })();
-    </script>
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

@@ -47,7 +47,7 @@ namespace MagasinCentral.Models
         /// <summary>
         /// Navigation vers le magasin demandeur.
         /// </summary>
-        public Magasin Magasin { get; set; } = null!;
+        public MagasinDto Magasin { get; set; } = null!;
 
         /// <summary>
         /// Navigation vers le produit demandé.

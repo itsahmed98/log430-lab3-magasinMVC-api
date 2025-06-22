@@ -18,7 +18,7 @@ namespace MagasinCentral.Data
         /// <summary>
         /// Table des magasins.
         /// </summary>
-        public DbSet<Magasin> Magasins { get; set; } = null!;
+        public DbSet<MagasinDto> Magasins { get; set; } = null!;
 
         /// <summary>
         /// Table des produits.
@@ -52,38 +52,38 @@ namespace MagasinCentral.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            //base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<MagasinStockProduit>()
-                .HasKey(ms => new { ms.MagasinId, ms.ProduitId });
+            //modelBuilder.Entity<MagasinStockProduit>()
+            //    .HasKey(ms => new { ms.MagasinId, ms.ProduitId });
 
-            modelBuilder.Entity<StockCentral>()
-                .HasKey(sc => sc.ProduitId);
+            //modelBuilder.Entity<StockCentral>()
+            //    .HasKey(sc => sc.ProduitId);
 
-            modelBuilder.Entity<StockCentral>()
-                .HasOne(sc => sc.Produit)
-                .WithOne(p => p.StockCentral)
-                .HasForeignKey<StockCentral>(sc => sc.ProduitId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //modelBuilder.Entity<StockCentral>()
+            //    .HasOne(sc => sc.Produit)
+            //    .WithOne(p => p.StockCentral)
+            //    .HasForeignKey<StockCentral>(sc => sc.ProduitId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<DemandeReapprovisionnement>()
-                .HasOne(d => d.Magasin)
-                .WithMany(m => m.DemandesReapprovisionnement)
-                .HasForeignKey(d => d.MagasinId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //modelBuilder.Entity<DemandeReapprovisionnement>()
+            //    .HasOne(d => d.Magasin)
+            //    .WithMany(m => m.DemandesReapprovisionnement)
+            //    .HasForeignKey(d => d.MagasinId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<DemandeReapprovisionnement>()
-                .HasOne(d => d.Produit)
-                .WithMany(p => p.DemandesReapprovisionnement)
-                .HasForeignKey(d => d.ProduitId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //modelBuilder.Entity<DemandeReapprovisionnement>()
+            //    .HasOne(d => d.Produit)
+            //    .WithMany(p => p.DemandesReapprovisionnement)
+            //    .HasForeignKey(d => d.ProduitId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<LigneVente>()
-                .HasOne(l => l.Vente)
-                .WithMany(v => v.Lignes)
-                .HasForeignKey(l => l.VenteId);
+            //modelBuilder.Entity<LigneVente>()
+            //    .HasOne(l => l.Vente)
+            //    .WithMany(v => v.Lignes)
+            //    .HasForeignKey(l => l.VenteId);
 
-            DataSeeder.Seed(modelBuilder);
+            //DataSeeder.Seed(modelBuilder);
         }
     }
 }

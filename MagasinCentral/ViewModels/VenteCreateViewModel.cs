@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MagasinCentral.ViewModels
 {
@@ -8,11 +7,7 @@ namespace MagasinCentral.ViewModels
         [Required]
         public int MagasinId { get; set; }
 
-        // Pour l’UI, on pourra initialiser 2 lignes par défaut
-        public List<LigneViewModel> Lignes { get; set; } = new()
-        {
-            new LigneViewModel(),
-            new LigneViewModel()
-        };
+        [MinLength(1, ErrorMessage = "Ajoutez au moins une ligne de vente.")]
+        public List<LigneViewModel> Lignes { get; set; } = new();
     }
 }

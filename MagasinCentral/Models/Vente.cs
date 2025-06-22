@@ -27,7 +27,7 @@ namespace MagasinCentral.Models
         /// <summary>
         /// Propriété de navigation vers le magasin.
         /// </summary>
-        public Magasin Magasin { get; set; } = null!;
+        public MagasinDto Magasin { get; set; } = null!;
 
         /// <summary>
         ///   Toutes les lignes associées à cette vente.
