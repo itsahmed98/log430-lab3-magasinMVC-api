@@ -3,19 +3,7 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "StockMcService\\StockMcService.csproj",
-        "Action": "Start"
-      },
-      {
-        "Path": "RapportMcService\\RapportMcService.csproj",
-        "Action": "Start"
-      },
-      {
-        "Path": "ProduitMcService\\ProduitMcService.csproj",
-        "Action": "Start"
-      },
-      {
-        "Path": "VenteMcService\\VenteMcService.csproj",
+        "Path": "MagasinMcService\\MagasinMcService.csproj",
         "Action": "Start"
       }
     ]

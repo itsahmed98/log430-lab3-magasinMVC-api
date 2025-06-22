@@ -165,3 +165,26 @@ Le pipeline CI/CD :
 Ahmed Akram Sherif
 Étudiant au baccalauréat en génie logiciel
 Cours : LOG430 — Été 2025
+
+
+# Dockerfile template
+
+# === Step 1: Build stage ===
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers
+COPY ["{PROJECT_FOLDER}/{PROJECT_NAME}.csproj", "{PROJECT_FOLDER}/"]
+RUN dotnet restore "{PROJECT_FOLDER}/{PROJECT_NAME}.csproj"
+
+# Copy everything and build
+COPY . .
+WORKDIR "/src/{PROJECT_FOLDER}"
+RUN dotnet publish "{PROJECT_NAME}.csproj" -c Release -o /app/publish
+
+# === Step 2: Runtime stage ===
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+
+ENTRYPOINT ["dotnet", "{PROJECT_NAME}.dll"]
