@@ -138,25 +138,52 @@ public class VenteController : Controller
     /// </summary>
     public async Task<IActionResult> Liste()
     {
-        var ventes = new List<VenteDto>();
+        var ventesAffichage = new List<VenteListeViewModel>();
+
         try
         {
-            _logger.LogInformation("Récupération de la liste des ventes en cours...");
-            ventes = await _httpClientVente.GetFromJsonAsync<List<VenteDto>>("");
+            _logger.LogInformation("Récupération des ventes...");
+            var ventes = await _httpClientVente.GetFromJsonAsync<List<VenteDto>>("");
 
             if (ventes == null || !ventes.Any())
+                return View(ventesAffichage);
+
+            foreach (var vente in ventes)
             {
-                _logger.LogWarning("Aucune vente trouvée dans la base de données.");
-                return View(new List<VenteDto>());
+                // Récupérer le nom du magasin
+                var magasin = await _httpClientMagasin.GetFromJsonAsync<MagasinDto>($"{_httpClientMagasin.BaseAddress}/{vente.MagasinId}");
+
+                var lignes = new List<LigneDetailViewModel>();
+
+                foreach (var ligne in vente.Lignes)
+                {
+                    // Récupérer le nom du produit
+                    var produit = await _httpClientProduit.GetFromJsonAsync<ProduitDto>($"{_httpClientProduit.BaseAddress}/{ligne.ProduitId}");
+
+                    lignes.Add(new LigneDetailViewModel
+                    {
+                        NomProduit = produit?.Nom ?? $"Produit #{ligne.ProduitId}",
+                        Quantite = ligne.Quantite,
+                        PrixUnitaire = ligne.PrixUnitaire
+                    });
+                }
+
+                ventesAffichage.Add(new VenteListeViewModel
+                {
+                    VenteId = vente.VenteId,
+                    Date = vente.Date,
+                    NomMagasin = magasin?.Nom ?? $"Magasin #{vente.MagasinId}",
+                    Lignes = lignes
+                });
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Erreur lors de la récupération des ventes.");
-            ModelState.AddModelError("", "Une erreur s'est produite lors de la récupération des ventes.");
-            return View(new List<VenteDto>());
+            ModelState.AddModelError("", "Erreur lors de la récupération des ventes.");
         }
 
-        return View(ventes);
+        return View(ventesAffichage);
     }
+
 }

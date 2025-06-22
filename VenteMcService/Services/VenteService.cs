@@ -23,20 +23,30 @@ namespace VenteMcService.Services
         {
             _logger.LogInformation("Début de la création d’une vente pour magasin ID {MagasinId}", vente.MagasinId);
 
-            foreach (var ligneDto in vente.Lignes)
+            var nouvellesLignes = new List<LigneVente>();
+
+            foreach (var ligneDto in vente.Lignes.ToList())
             {
                 _logger.LogInformation("Récupération des infos produit ID {ProduitId}", ligneDto.ProduitId);
-                var response = await _httpClient.GetAsync($"{_httpClient.BaseAddress}/{ligneDto.ProduitId}");
-                if (!response.IsSuccessStatusCode)
+
+                ProduitDto? produit;
+                try
                 {
-                    _logger.LogWarning("Produit ID {ProduitId} non trouvé par le microservice produit.", ligneDto.ProduitId);
-                    throw new Exception($"Produit {ligneDto.ProduitId} non trouvé.");
+                    produit = await _httpClient.GetFromJsonAsync<ProduitDto>($"{_httpClient.BaseAddress}/{ligneDto.ProduitId}");
+                    if (produit == null)
+                    {
+                        _logger.LogWarning("Produit ID {ProduitId} non trouvé par le microservice produit.", ligneDto.ProduitId);
+                        throw new Exception($"Produit {ligneDto.ProduitId} non trouvé.");
+                    }
+                    _logger.LogInformation("Produit ID {ProduitId} récupéré avec succès pour créer une vente.", ligneDto.ProduitId);
+                }
+                catch (HttpRequestException ex)
+                {
+                    _logger.LogError(ex, "Erreur lors de la récupération du produit ID {ProduitId} pour créer une vente", ligneDto.ProduitId);
+                    throw new Exception($"Erreur lors de la récupération du produit {ligneDto.ProduitId} : {ex.Message}");
                 }
 
-                var json = await response.Content.ReadAsStringAsync();
-                var produit = JsonSerializer.Deserialize<ProduitDto>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-                vente.Lignes.Add(new LigneVente
+                nouvellesLignes.Add(new LigneVente
                 {
                     ProduitId = ligneDto.ProduitId,
                     Quantite = ligneDto.Quantite,
@@ -46,8 +56,11 @@ namespace VenteMcService.Services
                 _logger.LogInformation("Produit ID {ProduitId} ajouté à la vente.", ligneDto.ProduitId);
             }
 
+            vente.Lignes = nouvellesLignes;
+
             _context.Ventes.Add(vente);
             await _context.SaveChangesAsync();
+
             _logger.LogInformation("Vente enregistrée avec ID {VenteId}", vente.VenteId);
             return vente;
         }

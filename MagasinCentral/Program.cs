@@ -93,7 +93,6 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 builder.Services.AddScoped<IReapprovisionnementService, ReapprovisionnementService>();
-builder.Services.AddScoped<IVenteService, VenteService>();
 builder.Services.AddScoped<IStockService, StockService>();
 
 builder.Services.AddControllersWithViews();
