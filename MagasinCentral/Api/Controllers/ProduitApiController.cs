@@ -1,6 +1,4 @@
 using MagasinCentral.Models;
-using MagasinCentral.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagasinCentral.Api.Controllers
@@ -13,13 +11,13 @@ namespace MagasinCentral.Api.Controllers
     [Route("api/v1/produits")]
     public class ProduitApiController : ControllerBase
     {
-        private readonly IProduitService _produitService;
         private readonly ILogger<ProduitApiController> _logger;
+        private readonly HttpClient _httpClient;
 
-        public ProduitApiController(ILogger<ProduitApiController> logger, IProduitService produitService)
+        public ProduitApiController(ILogger<ProduitApiController> logger, IHttpClientFactory httpClientFactory)
         {
-            _produitService = produitService ?? throw new ArgumentNullException(nameof(produitService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _httpClient = httpClientFactory?.CreateClient("ProduitMcService") ?? throw new ArgumentNullException(nameof(httpClientFactory));
 
         }
 
@@ -30,7 +28,7 @@ namespace MagasinCentral.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Produits()
         {
-            return Ok(await _produitService.GetAllProduitsAsync());
+            return Ok(await _httpClient.GetFromJsonAsync<List<ProduitDto>>(""));
         }
 
 
@@ -49,13 +47,8 @@ namespace MagasinCentral.Api.Controllers
         public async Task<IActionResult> Produit(int produitId)
         {
             _logger.LogInformation("Récupération du produit ID={ProduitId}", produitId);
-
-            var produit = await _produitService.GetProduitByIdAsync(produitId);
-            if (produit == null)
-            {
-                return NotFound();
-            }
-            return Ok(produit);
+            var produit = await _httpClient.GetFromJsonAsync<ProduitDto>($"{_httpClient.BaseAddress}/{produitId}");
+            return produit is not null ? Ok(produit) : NotFound();
         }
 
         /// <summary>
@@ -81,20 +74,20 @@ namespace MagasinCentral.Api.Controllers
             [FromRoute] int produitId,
             [FromBody] Produit payload)
         {
-            Console.WriteLine($"Modifier produit ID={produitId} avec données: {payload}");
-
             if (produitId != payload.ProduitId)
                 return BadRequest($"L’ID de l’URL ({produitId}) doit correspondre à celui du corps de la requête ({payload.ProduitId}).");
 
             try
             {
-                await _produitService.ModifierProduitAsync(payload);
-                return NoContent();
-            }
-            catch (ArgumentException ex)
-            {
-                _logger.LogWarning(ex, "Produit introuvable pour ID={ProduitId}", produitId);
-                return NotFound(new { message = ex.Message });
+                var response = await _httpClient.PutAsJsonAsync($"{_httpClient.BaseAddress}/{produitId}", payload);
+                if (response.IsSuccessStatusCode)
+                    return NoContent();
+
+                if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+                    return NotFound(new { message = $"Produit ID {produitId} non trouvé." });
+
+                _logger.LogError("Erreur inconnue depuis ProduitMcService (StatusCode: {StatusCode})", response.StatusCode);
+                return StatusCode((int)response.StatusCode, "Erreur côté microservice Produit.");
             }
             catch (Exception ex)
             {
