@@ -1,8 +1,5 @@
 using MagasinCentral.Models;
-using MagasinCentral.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
-using System.Text.Json;
 
 namespace MagasinCentral.Controllers
 {
@@ -31,17 +28,15 @@ namespace MagasinCentral.Controllers
 
             try
             {
-                var response = await _httpClient.GetAsync("");
+                var performances = await _httpClient.GetFromJsonAsync<List<PerformanceDto>>("");
 
-                if (!response.IsSuccessStatusCode)
+                if (performances == null || !performances.Any())
                 {
-                    _logger.LogError("Échec de la récupération des performances. Code HTTP : {StatusCode}", response.StatusCode);
+                    _logger.LogError("Échec de la récupération des performances");
                     result = View("Error");
                 }
 
                 _logger.LogInformation("Performaces ont été récupérées avec succès.");
-                var content = await response.Content.ReadAsStringAsync();
-                var performances = JsonSerializer.Deserialize<List<PerformanceDto>>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 result = View(performances);
             }
             catch (Exception ex)
