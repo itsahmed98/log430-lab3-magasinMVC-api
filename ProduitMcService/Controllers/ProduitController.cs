@@ -5,6 +5,9 @@ using ProduitMcService.Services;
 
 namespace ProduitMcService.Controllers
 {
+    /// <summary>
+    /// Fournit des endpoints pour gérer les produits.
+    /// </summary>
     [ApiController]
     [Route("api/v1/produits")]
     public class ProduitController : ControllerBase

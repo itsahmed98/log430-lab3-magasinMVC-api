@@ -8,6 +8,6 @@ namespace RapportMcService.Services
         /// Obtient un rapport consolidé de tous les magasins.
         /// </summary>
         /// <returns></returns>
-        Task<IEnumerable<RapportDto>> ObtenirRapportConsolideAsync();
+        Task<RapportVentesDto> ObtenirRapportConsolideAsync();
     }
 }

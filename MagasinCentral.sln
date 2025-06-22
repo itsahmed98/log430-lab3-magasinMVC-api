@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RapportMcService", "Rapport
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMcService", "StockMcService\StockMcService.csproj", "{E2833DD7-C55D-4D47-9D62-82EDE20D2EFF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RapportMcService.Test", "RapportMcService.Test\RapportMcService.Test.csproj", "{59305FC0-656D-47CF-984E-72D77DE93D0A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{E2833DD7-C55D-4D47-9D62-82EDE20D2EFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2833DD7-C55D-4D47-9D62-82EDE20D2EFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2833DD7-C55D-4D47-9D62-82EDE20D2EFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59305FC0-656D-47CF-984E-72D77DE93D0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59305FC0-656D-47CF-984E-72D77DE93D0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59305FC0-656D-47CF-984E-72D77DE93D0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59305FC0-656D-47CF-984E-72D77DE93D0A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

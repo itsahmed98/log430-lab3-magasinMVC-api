@@ -1,15 +1,10 @@
 ﻿namespace RapportMcService.Models
 {
     /// <summary>
-    /// Represente le stock
+    /// Représente un DTO des produit plus vendu
     /// </summary>
-    public class StockDto
+    public class ProduitLePlusVenduDto
     {
-        /// <summary>
-        /// L'identifiant du magasin
-        /// </summary>
-        public int MagasinId { get; set; }
-
         /// <summary>
         /// L'identifiant du produit
         /// </summary>
@@ -18,11 +13,11 @@
         /// <summary>
         /// Le nom du produit
         /// </summary>
-        public string NomProduit { get; set; } = string.Empty;
+        public string Nom { get; set; } = "";
 
         /// <summary>
-        /// La quantité du produit
+        /// La quantité totale vendu de ce produit
         /// </summary>
-        public int Quantite { get; set; }
+        public int QuantiteTotaleVendue { get; set; }
     }
 }

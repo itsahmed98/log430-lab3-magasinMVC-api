@@ -3,7 +3,7 @@
 namespace RapportMcService.Models
 {
     /// <summary>
-    /// Représente une ligne dans une vente.
+    /// Représente une ligne de vente
     /// </summary>
     public class LigneVenteDto
     {

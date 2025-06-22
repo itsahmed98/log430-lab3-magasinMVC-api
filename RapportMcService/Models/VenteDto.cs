@@ -1,9 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace RapportMcService.Models
+﻿namespace RapportMcService.Models
 {
     /// <summary>
-    /// Représente une vente. 
+    /// Représente une vente
     /// </summary>
     public class VenteDto
     {
@@ -25,6 +23,6 @@ namespace RapportMcService.Models
         /// <summary>
         /// Liste des lignes de vente associées à cette vente.
         /// </summary>
-        public List<LigneVenteDto> Lignes { get; set; } = new();
+        public List<LigneVenteDto> Lignes { get; set; } = new List<LigneVenteDto>();
     }
 }
