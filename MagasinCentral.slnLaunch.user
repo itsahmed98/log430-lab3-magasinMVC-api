@@ -3,7 +3,7 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "MagasinMcService\\MagasinMcService.csproj",
+        "Path": "StockMcService\\StockMcService.csproj",
         "Action": "Start"
       }
     ]

@@ -10,6 +10,8 @@ builder.Services.AddDbContext<StockDbContext>(opt =>
     opt.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IStockService, StockService>();
+builder.Services.AddScoped<IInventaireService, InventaireService>();
+builder.Services.AddScoped<IReapprovisionnementService, ReapprovisionnementService>();
 
 builder.Services.AddCors(options =>
 {
@@ -28,9 +30,9 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Produit Service API",
+        Title = "Stock Service API",
         Version = "v1",
-        Description = "API pour gérer les produits"
+        Description = "API pour gérer les stocks des magasins et les réapprovisionnement"
     });
 });
 

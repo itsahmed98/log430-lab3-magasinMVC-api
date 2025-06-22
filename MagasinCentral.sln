@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagasinMcService", "Magasin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagasinMcService.Test", "MagasinMcService.Test\MagasinMcService.Test.csproj", "{89859B38-29B7-42A2-8E35-9D2156A2F83B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockMcService.Test", "StockMcService.Test\StockMcService.Test.csproj", "{B1B02072-71BA-4E09-A5A5-301593104206}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{89859B38-29B7-42A2-8E35-9D2156A2F83B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89859B38-29B7-42A2-8E35-9D2156A2F83B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89859B38-29B7-42A2-8E35-9D2156A2F83B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1B02072-71BA-4E09-A5A5-301593104206}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1B02072-71BA-4E09-A5A5-301593104206}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1B02072-71BA-4E09-A5A5-301593104206}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1B02072-71BA-4E09-A5A5-301593104206}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

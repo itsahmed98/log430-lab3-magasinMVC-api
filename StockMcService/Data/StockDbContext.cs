@@ -11,6 +11,7 @@ namespace StockMcService.Data
         }
 
         public DbSet<StockItem> StockItems { get; set; } = null!;
+        public DbSet<DemandeReapprovisionnement> Demandes { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,6 +21,9 @@ namespace StockMcService.Data
                 .HasKey(si => new { si.MagasinId, si.ProduitId });
 
             modelBuilder.Entity<StockItem>().HasData(
+                new StockItem { MagasinId = 0, ProduitId = 1, Quantite = 400 },
+                new StockItem { MagasinId = 0, ProduitId = 2, Quantite = 400 },
+                new StockItem { MagasinId = 0, ProduitId = 3, Quantite = 400 },
                 new StockItem { MagasinId = 1, ProduitId = 1, Quantite = 100 },
                 new StockItem { MagasinId = 1, ProduitId = 2, Quantite = 80 },
                 new StockItem { MagasinId = 2, ProduitId = 1, Quantite = 60 },

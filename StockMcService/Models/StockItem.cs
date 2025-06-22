@@ -8,7 +8,7 @@
         /// <summary>
         /// L'identifiant unique du magasin.
         /// </summary>
-        public int MagasinId { get; set; }
+        public int MagasinId { get; set; } // Id 0 pour le centre de logistique (centre de distribution)
 
         /// <summary>
         /// L'identifiant unique du produit.
