@@ -5,6 +5,6 @@
         /// <summary>
         /// Liste des magasins pour le view model.
         /// </summary>
-        public List<MagasinStockViewModel> Magasins { get; set; }
+        public List<MagasinStockViewModel>? Magasins { get; set; }
     }
 }

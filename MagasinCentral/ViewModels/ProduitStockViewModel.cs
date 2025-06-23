@@ -13,7 +13,7 @@
         /// <summary>
         /// Le nom du produit.
         /// </summary>
-        public string NomProduit { get; set; }
+        public string? NomProduit { get; set; }
 
         /// <summary>
         /// Quantité disponible du produit dans le magasin.

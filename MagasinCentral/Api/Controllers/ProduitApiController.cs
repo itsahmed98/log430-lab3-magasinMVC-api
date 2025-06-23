@@ -72,7 +72,7 @@ namespace MagasinCentral.Api.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Modifier(
             [FromRoute] int produitId,
-            [FromBody] Produit payload)
+            [FromBody] ProduitDto payload)
         {
             if (produitId != payload.ProduitId)
                 return BadRequest($"L’ID de l’URL ({produitId}) doit correspondre à celui du corps de la requête ({payload.ProduitId}).");

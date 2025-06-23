@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using MagasinCentral.Services;
 using MagasinCentral.Models;
 
 namespace MagasinCentral.Controllers

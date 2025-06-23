@@ -33,7 +33,11 @@ namespace StockMcService.Services
             var stockLocal = await _context.StockItems
                 .FirstOrDefaultAsync(s => s.MagasinId == magasinId && s.ProduitId == produitId);
 
-            stockCentral.Quantite -= quantite;
+            if (magasinId > 1)
+            {
+                stockCentral.Quantite -= quantite;
+            }
+
 
             if (stockLocal != null)
                 stockLocal.Quantite += quantite;

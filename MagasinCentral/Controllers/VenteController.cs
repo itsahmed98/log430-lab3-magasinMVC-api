@@ -1,13 +1,7 @@
-using MagasinCentral.Data;
 using MagasinCentral.Models;
-using MagasinCentral.Services;
 using MagasinCentral.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Net.Http;
-using System.Text;
 using System.Text.Json;
 
 namespace MagasinCentral.Controllers;
@@ -17,7 +11,6 @@ namespace MagasinCentral.Controllers;
 /// </summary>
 public class VenteController : Controller
 {
-    private readonly MagasinDbContext _contexte;
     private readonly ILogger<VenteController> _logger;
     private readonly HttpClient _httpClientVente;
     private readonly HttpClient _httpClientProduit;
@@ -32,14 +25,12 @@ public class VenteController : Controller
     /// <exception cref="ArgumentNullException"></exception>
     public VenteController(ILogger<VenteController> logger, 
         IHttpClientFactory httpClientFactoryVente,
-        IHttpClientFactory httpClientFactoryProduit, 
-        MagasinDbContext contexte)
+        IHttpClientFactory httpClientFactoryProduit)
     {
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _httpClientVente = httpClientFactoryVente?.CreateClient("VenteMcService") ?? throw new ArgumentNullException(nameof(httpClientFactoryVente));
         _httpClientProduit = httpClientFactoryProduit?.CreateClient("ProduitMcService") ?? throw new ArgumentNullException(nameof(httpClientFactoryProduit));
         _httpClientMagasin = httpClientFactoryVente?.CreateClient("MagasinMcService") ?? throw new ArgumentNullException(nameof(httpClientFactoryVente));
-        _contexte = contexte ?? throw new ArgumentNullException(nameof(contexte));
     }
 
     /// <summary>

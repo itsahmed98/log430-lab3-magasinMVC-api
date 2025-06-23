@@ -5,7 +5,7 @@
         /// <summary>
         /// Nom du magasin.
         /// </summary>
-        public string NomMagasin { get; set; }
+        public string? NomMagasin { get; set; }
 
         /// <summary>
         /// L'identifiant du magasin.
@@ -15,6 +15,6 @@
         /// <summary>
         /// Les produits disponibles dans ce magasin.
         /// </summary>
-        public List<ProduitStockViewModel> Produits { get; set; }
+        public List<ProduitStockViewModel>? Produits { get; set; }
     }
 }
