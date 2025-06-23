@@ -14,7 +14,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: MagasinCentral/Dockerfile
     image: magasincentral-api:latest
     environment:
       ASPNETCORE_URLS: "http://+:80"
@@ -22,48 +22,30 @@ services:
       ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=magasincentraldb;Username=magasinuser;Password=magasinpass"
     depends_on:
       - db
-  
-  postgres-produitservice:
+    
+  produit-db:
     image: postgres:15
     container_name: magasincentral-produitservice-db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: magasincentral-produit-db
       POSTGRES_USER: magasinuser
       POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: magasincentral-produit-db
     volumes:
-      - pgdata_produits:/var/lib/postgresql/data
+      - produit_data:/var/lib/postgresql/data
 
-  produits-mc-service:
+  produitmc:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: magasincentral/produit-service:latest
-    environment:
-      ASPNETCORE_ENVIRONMENT: "Production"
-      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=magasincentral-produit-db;Username=magasinuser;Password=magasinpass"
-    depends_on:
-      - postgres-produitservice
+      dockerfile: ProduitMcService/Dockerfile
+    image: produitmc-api:latest
     ports:
-      - "5001:80"
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      - "7198:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    depends_on:
+      - produit-db
 
   nginx:
     image: nginx:stable
@@ -115,4 +97,4 @@ volumes:
   db_data:
   grafana_data:
   prometheus_data:
-  pgdata_produits:
+  produit_data:

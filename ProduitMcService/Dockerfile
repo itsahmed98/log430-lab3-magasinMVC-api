@@ -1,18 +1,21 @@
-# Build stage
+# Étape 1 : build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+WORKDIR /src
 
-# Copier la solution et tous les projets
-COPY . .
+# Copier uniquement le projet ProduitMcService
+COPY ProduitMcService/*.csproj ./ProduitMcService/
+WORKDIR /src/ProduitMcService
+RUN dotnet restore
 
-# Restaurer les dépendances
-RUN dotnet restore MagasinCentral.sln
+# Copier le reste du code
+COPY ProduitMcService/. ./ 
 
-# Publier un projet spécifique (exemple : ProduitMcService)
-RUN dotnet publish ProduitMcService/ProduitMcService.csproj -c Release -o /app/publish
+# Publier l'application
+RUN dotnet publish -c Release -o /app/publish
 
-# Runtime stage
+# Étape 2 : image finale runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app/publish .
+
 ENTRYPOINT ["dotnet", "ProduitMcService.dll"]
