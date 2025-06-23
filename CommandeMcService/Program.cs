@@ -2,21 +2,22 @@ using CommandeMcService.Services;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddHttpClient("StockMcService", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7185/api/v1/stocks");
+    client.BaseAddress = new Uri(config["Services:Stock"]);
 });
 
 builder.Services.AddHttpClient("PanierMcService", client =>
 {
-client.BaseAddress = new Uri("https://localhost:7019/api/v1/panier");
+    client.BaseAddress = new Uri(config["Services:Panier"]);
 });
 
 builder.Services.AddHttpClient("VenteMcService", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7184/api/v1/ventes");
+    client.BaseAddress = new Uri(config["Services:Vente"]);
 });
 
 builder.Services.AddScoped<ICommandeService, CommandeService>();

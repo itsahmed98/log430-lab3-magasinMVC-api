@@ -4,7 +4,7 @@ using VenteMcService.Data;
 using VenteMcService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var config = builder.Configuration;
 // Add services to the container.
 
 
@@ -27,12 +27,12 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddHttpClient("ProduitMcService", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7198/api/v1/produits");
+    client.BaseAddress = new Uri(config["Services:Produit"]);
 });
 
 builder.Services.AddHttpClient("StockMcService", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7185/api/v1/stocks");
+    client.BaseAddress = new Uri(config["Services:Stock"]);
 });
 
 builder.Services.AddControllers();
