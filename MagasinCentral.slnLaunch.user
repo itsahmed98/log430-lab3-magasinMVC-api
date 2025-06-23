@@ -33,6 +33,10 @@
       {
         "Path": "MagasinMcService\\MagasinMcService.csproj",
         "Action": "Start"
+      },
+      {
+        "Path": "CommandeMcService\\CommandeMcService.csproj",
+        "Action": "Start"
       }
     ]
   }

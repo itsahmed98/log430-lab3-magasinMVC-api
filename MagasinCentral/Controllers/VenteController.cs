@@ -80,6 +80,8 @@ public class VenteController : Controller
         var payload = new
         {
             MagasinId = vm.MagasinId,
+            ClientId = 0,
+            IsEnLigne = false,
             Date = DateTime.UtcNow,
             Lignes = vm.Lignes
                 .Where(l => l.Quantite > 0)

@@ -14,10 +14,19 @@ namespace VenteMcService.Models
         public int VenteId { get; set; }
 
         /// <summary>
-        /// L'identifiant du magasin où la vente a eu lieu.
+        /// L'identifiant du magasin où la vente a eu lieu. Peut etre null si la vente est en ligne.
         /// </summary>
-        [Required]
-        public int MagasinId { get; set; }
+        public int? MagasinId { get; set; }
+
+        /// <summary>
+        /// L'identifiant du client associé à la vente. Peut etre null si la vente est fait en personne.
+        /// </summary>
+        public int? ClientId { get; set; }
+
+        /// <summary>
+        /// Indique si la vente a été effectuée en ligne ou en physique.
+        /// </summary>
+        public bool IsEnLigne { get; set; }
 
         /// <summary>
         /// La date et l'heure de la vente.

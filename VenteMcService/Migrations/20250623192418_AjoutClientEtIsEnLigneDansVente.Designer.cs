@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VenteMcService.Data;
@@ -11,9 +12,11 @@ using VenteMcService.Data;
 namespace VenteMcService.Migrations
 {
     [DbContext(typeof(VenteDbContext))]
-    partial class VenteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250623192418_AjoutClientEtIsEnLigneDansVente")]
+    partial class AjoutClientEtIsEnLigneDansVente
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,30 +106,16 @@ namespace VenteMcService.Migrations
                         new
                         {
                             VenteId = 1,
-                            Date = new DateTime(2025, 6, 21, 19, 34, 39, 887, DateTimeKind.Utc).AddTicks(659),
+                            Date = new DateTime(2025, 6, 21, 19, 24, 17, 624, DateTimeKind.Utc).AddTicks(1233),
                             IsEnLigne = false,
                             MagasinId = 2
                         },
                         new
                         {
                             VenteId = 2,
-                            Date = new DateTime(2025, 6, 22, 19, 34, 39, 887, DateTimeKind.Utc).AddTicks(666),
+                            Date = new DateTime(2025, 6, 22, 19, 24, 17, 624, DateTimeKind.Utc).AddTicks(1243),
                             IsEnLigne = false,
                             MagasinId = 3
-                        },
-                        new
-                        {
-                            VenteId = 3,
-                            ClientId = 2,
-                            Date = new DateTime(2025, 6, 20, 19, 34, 39, 887, DateTimeKind.Utc).AddTicks(667),
-                            IsEnLigne = true
-                        },
-                        new
-                        {
-                            VenteId = 4,
-                            Date = new DateTime(2025, 6, 18, 19, 34, 39, 887, DateTimeKind.Utc).AddTicks(669),
-                            IsEnLigne = false,
-                            MagasinId = 1
                         });
                 });
 
