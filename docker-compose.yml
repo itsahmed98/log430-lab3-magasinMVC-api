@@ -47,6 +47,172 @@ services:
     depends_on:
       - produit-db
 
+  client-db:
+    image: postgres:15
+    container_name: magasincentral-clientservice-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: magasincentral-client-db
+    volumes:
+      - client_data:/var/lib/postgresql/data
+
+  clientmc:
+    build:
+      context: .
+      dockerfile: ClientMcService/Dockerfile
+    image: clientmc-api:latest
+    ports:
+      - "7041:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    depends_on:
+      - client-db
+
+  commandemc:
+    build:
+      context: .
+      dockerfile: CommandeMcService/Dockerfile
+    image: commandemc-api:latest
+    ports:
+      - "7154:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+
+  magasin-db:
+    image: postgres:15
+    container_name: magasincentral-magasindb
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: magasincentral-magasin-db
+    volumes:
+      - magasin_data:/var/lib/postgresql/data
+  
+  magasinmc:
+    build:
+      context: .
+      dockerfile: MagasinMcService/Dockerfile
+    image: magasinmc-api:latest
+    ports:
+      - "7013:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    depends_on:
+      - magasin-db
+
+  panier-db:
+    image: postgres:15
+    container_name: magasincentral-panier-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: magasincentral-panier-db
+    volumes:
+      - panier_data:/var/lib/postgresql/data
+  
+  paniermc:
+    build:
+      context: .
+      dockerfile: PanierMcService/Dockerfile
+    image: paniermc-api:latest
+    ports:
+      - "7019:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    depends_on:
+      - panier-db
+
+  rapportmc:
+    build:
+      context: .
+      dockerfile: RapportMcService/Dockerfile
+    image: rapportmc-api:latest
+    ports:
+      - "7214:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+
+  stock-db:
+    image: postgres:15
+    container_name: magasincentral-stock-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: magasincentral-stock-db
+    volumes:
+      - stock_data:/var/lib/postgresql/data
+
+  stockmc:
+    build:
+      context: .
+      dockerfile: StockMcService/Dockerfile
+    image: stockmc-api:latest
+    ports:
+      - "7185:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    depends_on:
+      - stock-db
+
+  vente-db:
+    image: postgres:15
+    container_name: magasincentral-vente-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: magasincentral-vente-db
+    volumes:
+      - vente_data:/var/lib/postgresql/data
+
+  ventemc:
+    build:
+      context: .
+      dockerfile: VenteMcService/Dockerfile
+    image: ventemc-api:latest
+    ports:
+      - "7184:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    depends_on:
+      - vente-db
+
+  performances-db:
+    image: postgres:15
+    container_name: magasincentral-performances-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: magasincentral-performances-db
+    volumes:
+      - performances_data:/var/lib/postgresql/data
+
+  performancesmc:
+    build:
+      context: .
+      dockerfile: PerformancesMcService/Dockerfile
+    image: performancesmc-api:latest
+    ports:
+      - "7044:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    depends_on:
+      - performances-db
+
   nginx:
     image: nginx:stable
     container_name: magasincentral-nginx
@@ -98,3 +264,9 @@ volumes:
   grafana_data:
   prometheus_data:
   produit_data:
+  client_data:
+  magasin_data:
+  panier_data:
+  stock_data:
+  vente_data:
+  performances_data:

@@ -1,0 +1,37 @@
+# Ignore build output
+bin/
+obj/
+out/
+
+# Ignore user-specific files
+*.user
+*.vspscc
+*.vssscc
+
+# Ignore Visual Studio settings
+.vs/
+*.suo
+*.userprefs
+
+# Ignore Rider settings
+.idea/
+
+# Ignore logs
+*.log
+
+# Ignore environment & secrets
+.env
+secrets.json
+
+# Ignore Docker files not needed in context
+Dockerfile.*
+docker-compose.*
+nginx.conf
+prometheus.yml
+
+# Ignore Git
+.git
+.gitignore
+
+# Ignore node_modules if you ever add frontend
+node_modules/
