@@ -33,6 +33,21 @@ builder.Services.AddHttpClient("RapportMcService", client =>
     client.BaseAddress = new Uri("https://localhost:7214/api/v1/rapports");
 });
 
+builder.Services.AddHttpClient("ClientMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7041/api/v1/clients");
+});
+
+builder.Services.AddHttpClient("PanierMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7019/api/v1/panier"); 
+});
+
+builder.Services.AddHttpClient("CommandeMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7154/api/v1/commandes/valider");
+});
+
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddEndpointsApiExplorer();
