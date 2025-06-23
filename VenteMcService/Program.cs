@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<VenteDbContext>(options =>
@@ -29,6 +30,10 @@ builder.Services.AddHttpClient("ProduitMcService", client =>
     client.BaseAddress = new Uri("https://localhost:7198/api/v1/produits");
 });
 
+builder.Services.AddHttpClient("StockMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7185/api/v1/stocks");
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

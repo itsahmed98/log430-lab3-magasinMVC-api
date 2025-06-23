@@ -18,6 +18,7 @@ public class VenteServiceTest
     private readonly VenteDbContext _context;
     private readonly Mock<ILogger<VenteService>> _loggerMock;
     private readonly Mock<IHttpClientFactory> _httpClientFactoryMock;
+    private readonly Mock<IHttpClientFactory> _httpClientFactoryMock2;
     private readonly VenteService _service;
 
     public VenteServiceTest()
@@ -29,6 +30,7 @@ public class VenteServiceTest
 
         _loggerMock = new Mock<ILogger<VenteService>>();
         _httpClientFactoryMock = new Mock<IHttpClientFactory>();
+        _httpClientFactoryMock2 = new Mock<IHttpClientFactory>();
 
         var produit = new ProduitDto { ProduitId = 1, Nom = "Test", Prix = 10.0m };
         var client = new HttpClient(new MockHttpMessageHandler(JsonSerializer.Serialize(produit)))
@@ -36,36 +38,19 @@ public class VenteServiceTest
             BaseAddress = new Uri("http://localhost")
         };
         _httpClientFactoryMock.Setup(f => f.CreateClient(It.IsAny<string>())).Returns(client);
+        _httpClientFactoryMock2.Setup(f => f.CreateClient(It.IsAny<string>())).Returns(client);
 
-        _service = new VenteService(_loggerMock.Object, _context, _httpClientFactoryMock.Object);
+        _service = new VenteService(_loggerMock.Object, _context, _httpClientFactoryMock.Object, _httpClientFactoryMock2.Object);
     }
 
     [Fact]
     public void Constructor_ShouldThrowArgumentNullException_WhenContextIsNull()
     {
-        Assert.Throws<ArgumentNullException>(() => new VenteService(_loggerMock.Object, null!, _httpClientFactoryMock.Object));
-        Assert.Throws<ArgumentNullException>(() => new VenteService(null!, _context, _httpClientFactoryMock.Object));
-        Assert.Throws<ArgumentNullException>(() => new VenteService(_loggerMock.Object, _context, null!));
+        Assert.Throws<ArgumentNullException>(() => new VenteService(_loggerMock.Object, null!, _httpClientFactoryMock.Object, _httpClientFactoryMock2.Object));
+        Assert.Throws<ArgumentNullException>(() => new VenteService(null!, _context, _httpClientFactoryMock.Object, _httpClientFactoryMock2.Object));
+        Assert.Throws<ArgumentNullException>(() => new VenteService(_loggerMock.Object, _context, null!, _httpClientFactoryMock2.Object));
+        Assert.Throws<ArgumentNullException>(() => new VenteService(_loggerMock.Object, _context, _httpClientFactoryMock.Object, null!));
     }
-
-    //[Fact]
-    //public async Task CreateAsync_ShouldCreateVente()
-    //{
-    //    var vente = new Vente
-    //    {
-    //        MagasinId = 1,
-    //        Date = DateTime.UtcNow,
-    //        Lignes = new List<LigneVente>
-    //        {
-    //            new LigneVente { ProduitId = 1, Quantite = 2 }
-    //        }
-    //    };
-
-    //    var created = await _service.CreateAsync(vente);
-    //    Assert.NotEqual(0, created.VenteId);
-    //    Assert.Single(_context.Ventes);
-    //    Assert.Single(_context.LignesVente);
-    //}
 
     [Fact]
     public async Task GetAllAsync_ShouldReturnAll()
@@ -73,35 +58,6 @@ public class VenteServiceTest
         var ventes = await _service.GetAllAsync();
         Assert.NotNull(ventes);
     }
-
-    //[Fact]
-    //public async Task GetByIdAsync_ShouldReturnVenteIfExists()
-    //{
-    //    var vente = await _service.CreateAsync(new Vente
-    //    {
-    //        MagasinId = 2,
-    //        Date = DateTime.UtcNow,
-    //        Lignes = new List<LigneVente> { new LigneVente { ProduitId = 1, Quantite = 1 } }
-    //    });
-
-    //    var result = await _service.GetByIdAsync(vente.VenteId);
-    //    Assert.NotNull(result);
-    //}
-
-    //[Fact]
-    //public async Task DeleteAsync_ShouldDeleteVente()
-    //{
-    //    var vente = await _service.CreateAsync(new Vente
-    //    {
-    //        MagasinId = 3,
-    //        Date = DateTime.UtcNow,
-    //        Lignes = new List<LigneVente> { new LigneVente { ProduitId = 1, Quantite = 1 } }
-    //    });
-
-    //    await _service.DeleteAsync(vente.VenteId);
-    //    var result = await _service.GetByIdAsync(vente.VenteId);
-    //    Assert.Null(result);
-    //}
 
     private class MockHttpMessageHandler : HttpMessageHandler
     {

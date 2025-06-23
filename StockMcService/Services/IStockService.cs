@@ -24,5 +24,14 @@ namespace StockMcService.Services
         /// <param name="magasinId"></param>
         /// <returns></returns>
         Task<IEnumerable<StockDto>> GetStockByMagasinAsync(int magasinId);
+
+        /// <summary>
+        /// Met à jour le stock d'un produit dans un magasin spécifique.
+        /// </summary>
+        /// <param name="magasinId"></param>
+        /// <param name="produitId"></param>
+        /// <param name="quantite"></param>
+        /// <returns></returns>
+        Task<bool> UpdateStockAsync(int magasinId, int produitId, int quantite);
     }
 }

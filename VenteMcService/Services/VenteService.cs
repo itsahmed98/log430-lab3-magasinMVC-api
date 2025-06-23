@@ -9,13 +9,15 @@ namespace VenteMcService.Services
     {
         private readonly VenteDbContext _context;
         private readonly ILogger<VenteService> _logger;
-        private readonly HttpClient _httpClient;
+        private readonly HttpClient _httpProduit;
+        private readonly HttpClient _httpStock;
 
-        public VenteService(ILogger<VenteService> logger, VenteDbContext context, IHttpClientFactory httpClientFactory)
+        public VenteService(ILogger<VenteService> logger, VenteDbContext context, IHttpClientFactory httpClientProduit, IHttpClientFactory httpClientStock)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _httpClient = httpClientFactory?.CreateClient("ProduitMcService") ?? throw new ArgumentNullException(nameof(httpClientFactory));
+            _httpProduit = httpClientProduit?.CreateClient("ProduitMcService") ?? throw new ArgumentNullException(nameof(httpClientProduit));
+            _httpStock = httpClientStock?.CreateClient("StockMcService") ?? throw new ArgumentNullException(nameof(httpClientStock));
         }
 
         /// <inheritdoc/> 
@@ -32,7 +34,7 @@ namespace VenteMcService.Services
                 ProduitDto? produit;
                 try
                 {
-                    produit = await _httpClient.GetFromJsonAsync<ProduitDto>($"{_httpClient.BaseAddress}/{ligneDto.ProduitId}");
+                    produit = await _httpProduit.GetFromJsonAsync<ProduitDto>($"{_httpProduit.BaseAddress}/{ligneDto.ProduitId}");
                     if (produit == null)
                     {
                         _logger.LogWarning("Produit ID {ProduitId} non trouvé par le microservice produit.", ligneDto.ProduitId);
@@ -61,6 +63,28 @@ namespace VenteMcService.Services
             _context.Ventes.Add(vente);
             await _context.SaveChangesAsync();
 
+            // Mettre a jour le stock pour chaque ligne de vente
+            foreach (var ligne in nouvellesLignes)
+            {
+                _logger.LogInformation("Mise à jour du stock pour le produit ID {ProduitId} avec la quantité {Quantite}", ligne.ProduitId, ligne.Quantite);
+                try
+                {
+                    //https://localhost:7185/api/v1/stocks?magasinId=2&produitId=3&quantite=3
+                    var response = await _httpStock.PutAsync($"{_httpStock.BaseAddress}?magasinId={vente.MagasinId}&produitId={ligne.ProduitId}&quantite={-ligne.Quantite}", null);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        _logger.LogError("Erreur lors de la mise à jour du stock pour le produit ID {ProduitId}.", ligne.ProduitId);
+                        throw new Exception($"Erreur lors de la mise à jour du stock pour le produit {ligne.ProduitId}.");
+                    }
+                    _logger.LogInformation("Stock mis à jour avec succès pour le produit ID {ProduitId}.", ligne.ProduitId);
+                }
+                catch (HttpRequestException ex)
+                {
+                    _logger.LogError(ex, "Erreur lors de la mise à jour du stock pour le produit ID {ProduitId}", ligne.ProduitId);
+                    throw new Exception($"Erreur lors de la mise à jour du stock pour le produit {ligne.ProduitId} : {ex.Message}");
+                }
+            }
+
             _logger.LogInformation("Vente enregistrée avec ID {VenteId}", vente.VenteId);
             return vente;
         }
@@ -80,6 +104,28 @@ namespace VenteMcService.Services
             _context.LignesVente.RemoveRange(exist.Lignes);
             _context.Ventes.Remove(exist);
             await _context.SaveChangesAsync();
+
+            foreach (var ligne in exist.Lignes)
+            {
+                _logger.LogInformation("Mise à jour du stock pour le produit ID {ProduitId} avec la quantité {Quantite}", ligne.ProduitId, ligne.Quantite);
+                try
+                {
+                    //https://localhost:7185/api/v1/stocks?magasinId=2&produitId=3&quantite=3
+                    var response = await _httpStock.PutAsync($"{_httpStock.BaseAddress}?magasinId={exist.MagasinId}&produitId={ligne.ProduitId}&quantite={ligne.Quantite}", null);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        _logger.LogError("Erreur lors de la mise à jour du stock pour le produit ID {ProduitId}.", ligne.ProduitId);
+                        throw new Exception($"Erreur lors de la mise à jour du stock pour le produit {ligne.ProduitId}.");
+                    }
+                    _logger.LogInformation("Stock mis à jour avec succès pour le produit ID {ProduitId}.", ligne.ProduitId);
+                }
+                catch (HttpRequestException ex)
+                {
+                    _logger.LogError(ex, "Erreur lors de la mise à jour du stock pour le produit ID {ProduitId}", ligne.ProduitId);
+                    throw new Exception($"Erreur lors de la mise à jour du stock pour le produit {ligne.ProduitId} : {ex.Message}");
+                }
+            }
+
             _logger.LogInformation("Vente ID {Id} supprimée avec succès.", id);
         }
 

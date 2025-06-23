@@ -77,5 +77,30 @@ namespace StockMcService.Controllers
             _logger.LogWarning("Stock non trouvé pour MagasinId={MagasinId}, ProduitId={ProduitId}.", magasinId, produitId);
             return NotFound(new { message = $"Stock introuvable pour magasin #{magasinId} et produit #{produitId}." });
         }
+
+        /// <summary>
+        /// Mettre à jour le stock d’un produit dans un magasin.
+        /// </summary>
+        /// <param name="magasinId">Le magasin dans laquelle la vente a prit lieu. Si la vente s'est fait en ligne alors magasin id = 1</param>
+        /// <param name="produitId"></param>
+        /// <param name="quantite"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public async Task<ActionResult> UpdateStock(int magasinId, int produitId, int quantite)
+        {
+            _logger.LogInformation("Mise à jour du stock pour MagasinId={MagasinId}, ProduitId={ProduitId}, Quantité={Quantite}.", magasinId, produitId, quantite);
+            try
+            {
+                await _service.UpdateStockAsync(magasinId, produitId, quantite);
+                _logger.LogInformation("Stock mis à jour avec succès.");
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erreur lors de la mise à jour du stock pour MagasinId={MagasinId}, ProduitId={ProduitId}.", magasinId, produitId);
+                return StatusCode(500, "Erreur interne du serveur");
+            }
+        }
     }
 }

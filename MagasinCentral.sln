@@ -35,6 +35,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientMcService", "ClientMc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientMcService.Test", "ClientMcService.Test\ClientMcService.Test.csproj", "{A8AAA17A-B9BB-4FEA-A62B-DB6A7858F868}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanierMcService", "PanierMcService\PanierMcService.csproj", "{59F7272E-23E4-41FD-A49C-65FB5CEDDBF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandeMcService", "CommandeMcService\CommandeMcService.csproj", "{E36F5898-C058-4D07-A088-DAE1A9A7CF91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +109,14 @@ Global
 		{A8AAA17A-B9BB-4FEA-A62B-DB6A7858F868}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8AAA17A-B9BB-4FEA-A62B-DB6A7858F868}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8AAA17A-B9BB-4FEA-A62B-DB6A7858F868}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59F7272E-23E4-41FD-A49C-65FB5CEDDBF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59F7272E-23E4-41FD-A49C-65FB5CEDDBF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59F7272E-23E4-41FD-A49C-65FB5CEDDBF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59F7272E-23E4-41FD-A49C-65FB5CEDDBF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E36F5898-C058-4D07-A088-DAE1A9A7CF91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E36F5898-C058-4D07-A088-DAE1A9A7CF91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E36F5898-C058-4D07-A088-DAE1A9A7CF91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E36F5898-C058-4D07-A088-DAE1A9A7CF91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

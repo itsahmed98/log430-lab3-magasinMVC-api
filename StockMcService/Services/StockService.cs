@@ -9,13 +9,13 @@ namespace StockMcService.Services
     /// </summary>
     public class StockService : IStockService
     {
-        private readonly StockDbContext _contexte;
-        public StockService(StockDbContext db) => _contexte = db;
+        private readonly StockDbContext _context;
+        public StockService(StockDbContext db) => _context = db;
 
         /// <inheritdoc/> 
         public async Task<IEnumerable<StockDto>> GetAllStocksAsync()
         {
-            return await _contexte.StockItems
+            return await _context.StockItems
                 .AsNoTracking()
                 .Select(si => new StockDto
                 {
@@ -29,7 +29,7 @@ namespace StockMcService.Services
         /// <inheritdoc/> 
         public async Task<StockDto?> GetStockByMagasinProduitAsync(int magasinId, int produitId)
         {
-            var si = await _contexte.StockItems
+            var si = await _context.StockItems
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.MagasinId == magasinId && x.ProduitId == produitId);
             if (si == null) return null;
@@ -44,7 +44,7 @@ namespace StockMcService.Services
         /// <inheritdoc/>
         public async Task<IEnumerable<StockDto>> GetStockByMagasinAsync(int magasinId)
         {
-            return await _contexte.StockItems
+            return await _context.StockItems
                 .Where(s => s.MagasinId == magasinId)
                 .Select(s => new StockDto
                 {
@@ -53,6 +53,20 @@ namespace StockMcService.Services
                     Quantite = s.Quantite
                 })
                 .ToListAsync();
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> UpdateStockAsync(int magasinId, int produitId, int quantite)
+        {
+            var stockLocal = await _context.StockItems
+                .FirstOrDefaultAsync(s => s.MagasinId == magasinId && s.ProduitId == produitId);
+
+            if (stockLocal is not null)
+                stockLocal.Quantite += quantite;
+
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }
