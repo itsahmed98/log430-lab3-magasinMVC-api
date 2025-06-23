@@ -5,7 +5,7 @@ namespace MagasinCentral.Models
     /// <summary>
     /// Représente une demande de réapprovisionnement d’un magasin.
     /// </summary>
-    public class DemandeReapprovisionnement
+    public class DemandeReapprovisionnementDto
     {
         /// <summary>
         /// Clé primaire de la demande.
@@ -43,15 +43,5 @@ namespace MagasinCentral.Models
         [Required]
         [MaxLength(20)]
         public string Statut { get; set; } = "EnAttente";
-
-        /// <summary>
-        /// Navigation vers le magasin demandeur.
-        /// </summary>
-        public MagasinDto Magasin { get; set; } = null!;
-
-        /// <summary>
-        /// Navigation vers le produit demandé.
-        /// </summary>
-        public Produit Produit { get; set; } = null!;
     }
 }

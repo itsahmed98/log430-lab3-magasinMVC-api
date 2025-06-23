@@ -43,7 +43,7 @@ namespace MagasinCentral.Data
         /// <summary>
         /// Table des demandes de réapprovisionnement.
         /// </summary>
-        public DbSet<DemandeReapprovisionnement> DemandesReapprovisionnement { get; set; } = null!;
+        public DbSet<DemandeReapprovisionnementDto> DemandeReapprovisionnementDtos { get; set; } = null!;
 
         /// <summary>
         /// Table des lignes de vente (détails des produits vendus dans chaque vente).

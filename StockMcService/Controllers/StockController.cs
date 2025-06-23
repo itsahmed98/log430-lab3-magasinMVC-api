@@ -34,6 +34,28 @@ namespace StockMcService.Controllers
         }
 
         /// <summary>
+        /// Récupère le stock central (MagasinId = 0).
+        /// </summary>
+        [HttpGet("stockcentral")]
+        public async Task<ActionResult<IEnumerable<StockDto>>> GetStockCentral()
+        {
+            _logger.LogInformation("Récupération du stock central.");
+            var stocks = await _service.GetStockByMagasinAsync(1);
+            return Ok(stocks);
+        }
+
+        /// <summary>
+        /// Récupère le stock d’un magasin donné.
+        /// </summary>
+        [HttpGet("stockmagasin/{magasinId:int}")]
+        public async Task<ActionResult<IEnumerable<StockDto>>> GetStockMagasin(int magasinId)
+        {
+            _logger.LogInformation("Récupération du stock pour le magasin {MagasinId}.", magasinId);
+            var stocks = await _service.GetStockByMagasinAsync(magasinId);
+            return Ok(stocks);
+        }
+
+        /// <summary>
         /// Récupère le stock d’un produit dans un magasin.
         /// </summary>
         /// <param name="magasinId">Identifiant du magasin</param>

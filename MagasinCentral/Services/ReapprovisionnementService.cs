@@ -79,7 +79,7 @@ namespace MagasinCentral.Services
                 throw new ArgumentException($"Le produit d’ID={produitId} n’existe pas.");
             }
 
-            var demande = new DemandeReapprovisionnement
+            var demande = new DemandeReapprovisionnementDto
             {
                 MagasinId = magasinId,
                 ProduitId = produitId,
@@ -88,19 +88,19 @@ namespace MagasinCentral.Services
                 Statut = "EnAttente"
             };
 
-            _contexte.DemandesReapprovisionnement.Add(demande);
+            _contexte.DemandeReapprovisionnementDtos.Add(demande);
             await _contexte.SaveChangesAsync();
 
             _logger.LogInformation("Demande de réapprovisionnement enregistrée avec succès (ID temporaire)");
         }
 
         /// <inheritdoc />
-        public async Task<List<DemandeReapprovisionnement>> GetDemandesReapprovisionnementAsync()
+        public async Task<List<DemandeReapprovisionnementDto>> GetDemandesReapprovisionnementAsync()
         {
             _logger.LogInformation("Récupération de toutes les demandes de réapprovisionnement...");
-            var result = await _contexte.DemandesReapprovisionnement
-                .Include(d => d.Magasin)
-                .Include(d => d.Produit)
+            var result = await _contexte.DemandeReapprovisionnementDtos
+                .Include(d => d.MagasinId)
+                .Include(d => d.ProduitId)
                 .OrderByDescending(d => d.DateDemande)
                 .ToListAsync();
             _logger.LogInformation("{Count} demandes récupérées.", result.Count);
@@ -108,13 +108,13 @@ namespace MagasinCentral.Services
         }
 
         /// <inheritdoc />
-        public async Task<List<DemandeReapprovisionnement>> GetDemandesEnAttenteAsync()
+        public async Task<List<DemandeReapprovisionnementDto>> GetDemandesEnAttenteAsync()
         {
             _logger.LogInformation("Récupération des demandes en attente...");
-            var result = await _contexte.DemandesReapprovisionnement
+            var result = await _contexte.DemandeReapprovisionnementDtos
                 .Where(d => d.Statut == "EnAttente")
-                .Include(d => d.Magasin)
-                .Include(d => d.Produit)
+                .Include(d => d.MagasinId)
+                .Include(d => d.ProduitId)
                 .OrderBy(d => d.DateDemande)
                 .ToListAsync();
             _logger.LogInformation("{Count} demandes en attente récupérées.", result.Count);
@@ -126,9 +126,9 @@ namespace MagasinCentral.Services
         {
             _logger.LogInformation("Traitement de la demande ID={DemandeId} (Approuver={Approuver})", demandeId, approuver);
 
-            var demande = await _contexte.DemandesReapprovisionnement
-                .Include(d => d.Magasin)
-                .Include(d => d.Produit)
+            var demande = await _contexte.DemandeReapprovisionnementDtos
+                .Include(d => d.MagasinId)
+                .Include(d => d.ProduitId)
                 .FirstOrDefaultAsync(d => d.DemandeId == demandeId);
 
             if (demande == null)

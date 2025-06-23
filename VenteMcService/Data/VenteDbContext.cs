@@ -25,8 +25,8 @@ namespace VenteMcService.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Vente>().HasData(
-                new Vente { VenteId = 1, MagasinId = 1, Date = DateTime.UtcNow.AddDays(-2) },
-                new Vente { VenteId = 2, MagasinId = 2, Date = DateTime.UtcNow.AddDays(-1) }
+                new Vente { VenteId = 1, MagasinId = 2, Date = DateTime.UtcNow.AddDays(-2) },
+                new Vente { VenteId = 2, MagasinId = 3, Date = DateTime.UtcNow.AddDays(-1) }
             );
             modelBuilder.Entity<LigneVente>().HasData(
                 new LigneVente { LigneVenteId = 1, VenteId = 1, ProduitId = 1, Quantite = 2, PrixUnitaire = 1.50m },

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VenteMcService.Data;
@@ -11,9 +12,11 @@ using VenteMcService.Data;
 namespace VenteMcService.Migrations
 {
     [DbContext(typeof(VenteDbContext))]
-    partial class VenteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250622212009_CorrigerIdMagasinVenteService")]
+    partial class CorrigerIdMagasinVenteService
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,13 +100,13 @@ namespace VenteMcService.Migrations
                         new
                         {
                             VenteId = 1,
-                            Date = new DateTime(2025, 6, 20, 21, 23, 16, 529, DateTimeKind.Utc).AddTicks(7979),
+                            Date = new DateTime(2025, 6, 20, 21, 20, 8, 344, DateTimeKind.Utc).AddTicks(2894),
                             MagasinId = 2
                         },
                         new
                         {
                             VenteId = 2,
-                            Date = new DateTime(2025, 6, 21, 21, 23, 16, 529, DateTimeKind.Utc).AddTicks(7986),
+                            Date = new DateTime(2025, 6, 21, 21, 20, 8, 344, DateTimeKind.Utc).AddTicks(2900),
                             MagasinId = 3
                         });
                 });

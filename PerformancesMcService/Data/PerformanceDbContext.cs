@@ -21,7 +21,7 @@ namespace PerformancesMcService.Data
                 new Performance
                 {
                     PerformanceId = 1,
-                    MagasinId = 1,
+                    MagasinId = 2,
                     Date = DateTime.UtcNow.Date.AddDays(-2),
                     ChiffreAffaires = 1000m,
                     NbVentes = 50,
@@ -31,7 +31,7 @@ namespace PerformancesMcService.Data
                 new Performance
                 {
                     PerformanceId = 2,
-                    MagasinId = 2,
+                    MagasinId = 3,
                     Date = DateTime.UtcNow.Date.AddDays(-2),
                     ChiffreAffaires = 1500m,
                     NbVentes = 70,
@@ -41,7 +41,7 @@ namespace PerformancesMcService.Data
                 new Performance
                 {
                     PerformanceId = 3,
-                    MagasinId = 1,
+                    MagasinId = 2,
                     Date = DateTime.UtcNow.Date.AddDays(-1),
                     ChiffreAffaires = 1100m,
                     NbVentes = 55,
@@ -51,7 +51,7 @@ namespace PerformancesMcService.Data
                 new Performance
                 {
                     PerformanceId = 4,
-                    MagasinId = 2,
+                    MagasinId = 3,
                     Date = DateTime.UtcNow.Date.AddDays(-1),
                     ChiffreAffaires = 1600m,
                     NbVentes = 75,
@@ -61,7 +61,7 @@ namespace PerformancesMcService.Data
                 new Performance
                 {
                     PerformanceId = 5,
-                    MagasinId = 1,
+                    MagasinId = 2,
                     Date = DateTime.UtcNow.Date,
                     ChiffreAffaires = 1200m,
                     NbVentes = 60,
@@ -71,7 +71,7 @@ namespace PerformancesMcService.Data
                 new Performance
                 {
                     PerformanceId = 6,
-                    MagasinId = 2,
+                    MagasinId = 3,
                     Date = DateTime.UtcNow.Date,
                     ChiffreAffaires = 1700m,
                     NbVentes = 80,

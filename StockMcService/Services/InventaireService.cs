@@ -22,7 +22,7 @@ namespace StockMcService.Services
         public async Task<bool> TransférerStockAsync(int produitId, int magasinId, int quantite)
         {
             var stockCentral = await _context.StockItems
-                .FirstOrDefaultAsync(s => s.MagasinId == 0 && s.ProduitId == produitId);
+                .FirstOrDefaultAsync(s => s.MagasinId == 1 && s.ProduitId == produitId);
 
             if (stockCentral == null || stockCentral.Quantite < quantite)
             {

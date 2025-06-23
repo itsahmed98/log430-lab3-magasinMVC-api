@@ -28,12 +28,12 @@ namespace MagasinCentral.Services
         /// Récupère la liste des demandes de réapprovisionnement.
         /// </summary>
         /// <returns></returns>
-        Task<List<DemandeReapprovisionnement>> GetDemandesReapprovisionnementAsync();
+        Task<List<DemandeReapprovisionnementDto>> GetDemandesReapprovisionnementAsync();
 
         /// <summary>
         /// Récupère uniquement les demandes en statut "EnAttente".
         /// </summary>
-        Task<List<DemandeReapprovisionnement>> GetDemandesEnAttenteAsync();
+        Task<List<DemandeReapprovisionnementDto>> GetDemandesEnAttenteAsync();
 
         /// <summary>
         /// Traiter une demande en attente

@@ -40,5 +40,19 @@ namespace StockMcService.Services
                 Quantite = si.Quantite
             };
         }
+
+        /// <inheritdoc/>
+        public async Task<IEnumerable<StockDto>> GetStockByMagasinAsync(int magasinId)
+        {
+            return await _contexte.StockItems
+                .Where(s => s.MagasinId == magasinId)
+                .Select(s => new StockDto
+                {
+                    ProduitId = s.ProduitId,
+                    MagasinId = s.MagasinId,
+                    Quantite = s.Quantite
+                })
+                .ToListAsync();
+        }
     }
 }

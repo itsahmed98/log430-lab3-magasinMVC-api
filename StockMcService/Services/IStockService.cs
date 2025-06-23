@@ -17,5 +17,12 @@ namespace StockMcService.Services
         /// <param name="produitId"></param>
         /// <returns></returns>
         Task<StockDto?> GetStockByMagasinProduitAsync(int magasinId, int produitId);
+
+        /// <summary>
+        /// Récupère le stock d'un magasin spécifique.
+        /// </summary>
+        /// <param name="magasinId"></param>
+        /// <returns></returns>
+        Task<IEnumerable<StockDto>> GetStockByMagasinAsync(int magasinId);
     }
 }

@@ -54,6 +54,6 @@ namespace MagasinCentral.Models
         /// <summary>
         /// Collection des demandes de réapprovisionnement associées à ce produit.
         /// </summary>
-        public ICollection<DemandeReapprovisionnement> DemandesReapprovisionnement { get; set; } = new List<DemandeReapprovisionnement>();
+        public ICollection<DemandeReapprovisionnementDto> DemandesReapprovisionnement { get; set; } = new List<DemandeReapprovisionnementDto>();
     }
 }
