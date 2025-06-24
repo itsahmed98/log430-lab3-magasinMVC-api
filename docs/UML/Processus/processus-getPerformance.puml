@@ -1,0 +1,19 @@
+@startuml VueProcessus_Performances
+title Vue de Processus – Consultation des performances par magasin
+
+actor Gestionnaire
+participant "Application MVC\n(PerformancesController)" as UI
+participant "PerformancesMcService\nPerformanceController" as Performance
+participant "VenteMcService\nVenteController" as Vente
+
+Gestionnaire -> UI : GET /performances
+UI -> Performance : GET /performances
+
+Performance -> Vente : GET /ventes
+Vente --> Performance : Liste des ventes
+
+Performance -> Performance : Calcul des indicateurs
+Performance --> UI : Résultats des performances
+UI --> Gestionnaire : Affichage des performances
+
+@enduml

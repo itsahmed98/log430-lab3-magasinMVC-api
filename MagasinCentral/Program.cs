@@ -5,7 +5,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpClient("ProduitMcService", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7198/api/v1/produits"); // a remplacer par le gateway: http://gateway/api/produits/
+    client.BaseAddress = new Uri("https://localhost:7198/api/v1/produits"); // a remplacer par le gateway
 });
 
 builder.Services.AddHttpClient("PerformancesMcService", client =>

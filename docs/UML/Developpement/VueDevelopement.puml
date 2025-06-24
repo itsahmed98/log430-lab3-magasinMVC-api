@@ -1,118 +1,112 @@
-@startuml VueDéveloppement_MagasinCentral
-title Vue de Développement - Magasin Central
-!pragma layout smetana
+@startuml VueDeDéveloppement_Microservices
+title Vue de Développement - Architecture Microservices
+
 left to right direction
-
-skinparam component {
-  horizontalSpacing 40
-  verticalSpacing 30
-}
+skinparam componentStyle rectangle
 skinparam package {
-  padding 20
+  padding 15
 }
 
-package "Web MVC (Présentation)" as WebMVC <<Layer>> {
-  package "Views" as view <<component>> {
-    [ProduitView] <<Component>>
-      note right of [ProduitView]
-        . Index.csthml
-        . Modifier.csthml
-        . Rechercher.csthml
-      end note
-    [RapportView] <<Component>>
-      note right of [RapportView]
-        . Index.csthml
-      end note
-    [PerformancesView] <<Component>>
-      note right of [PerformancesView]
-        . Index.csthml
-      end note
-    [ReapprovisionnementView] <<Component>>
-      note right of [ReapprovisionnementView]
-        . Index.csthml
-        . DemandeRéappro.csthml
-      end note
-    [TraiterDemandesView] <<Component>>
-      note right of [TraiterDemandesView]
-        . Index.csthml
-      end note
-    [VenteView] <<Component>>
-      note right of [VenteView]
-        . Enregistrer.csthml
-        . Liste.csthml
-      end note
-  }
-
-  package "Controllers" as controller <<component>> {
-    [ProduitController] <<Component>>
-    [RapportController] <<Component>>
-    [PerformancesController] <<Component>>
-    [ReapprovisionnementController] <<Component>>
-    [TraiterDemandesController] <<Component>>
-    [VenteController] <<Component>>
-  }
-}
-
-package "MagasinCentral.Services (Métier)" as Services <<Layer>> {
-  interface IProduitService
-  interface IRapportService
-  interface IPerformancesService
-  interface IReapprovisionnementService
-  interface IVenteService
-
-  [ProduitService] <<Component>>
-  [RapportService] <<Component>>
-  [PerformancesService] <<Component>>
-  [ReapprovisionnementService] <<Component>>
-  [VenteService] <<Component>>
-}
-
-package "MagasinCentral.Data (Persistence)" as Contexte <<Layer>> {
-  [MagasinDbContext] <<Component>>
-  [DataSeeder] <<Component>>
-}
-
-package "MagasinCentral.Models (Domain)" as Models <<Layer>> {
-  [DemandeReapprovisionnement] <<Entity>>
+package "ProduitMcService" {
+  [ProduitController] <<API>>
+  [ProduitService] <<Métier>>
+  [ProduitDbContext] <<Persistence>>
   [Produit] <<Entity>>
-  [LigneVente] <<Entity>>
-  [Magasin] <<Entity>>
-  [MagasinStockProduit] <<Entity>>
-  [RapportDto] <<DTO>>
-  [StockCentral] <<Entity>>
+
+  ProduitController --> ProduitService
+  ProduitService --> ProduitDbContext
+  ProduitDbContext --> Produit
+}
+
+package "VenteMcService" {
+  [VenteController] <<API>>
+  [VenteService] <<Métier>>
+  [VenteDbContext] <<Persistence>>
   [Vente] <<Entity>>
+  [LigneVente] <<Entity>>
+
+  VenteController --> VenteService
+  VenteService --> VenteDbContext
+  VenteDbContext --> Vente
+  VenteDbContext --> LigneVente
 }
 
-package "MagasinCentral.Api" as API <<Layer>> {
-  [AuthController] <<Component>>
-  [PerformancesApiController] <<Component>>
-  [RapportApiController] <<Component>>
-  [ProduitApiController] <<Component>>
-  [StockApiController] <<Component>>
+package "StockMcService" {
+  [StockController] <<API>>
+  [ReapprovisionnementController] <<API>>
+  [StockService] <<Métier>>
+  [ReapprovisionnementService] <<Métier>>
+  [StockDbContext] <<Persistence>>
+  [StockCentral] <<Entity>>
+  [MagasinStockProduit] <<Entity>>
+  [DemandeReapprovisionnement] <<Entity>>
+
+  StockController --> StockService
+  ReapprovisionnementController --> ReapprovisionnementService
+  StockService --> StockDbContext
+  ReapprovisionnementService --> StockDbContext
+  StockDbContext --> StockCentral
+  StockDbContext --> MagasinStockProduit
+  StockDbContext --> DemandeReapprovisionnement
 }
 
-controller --> Services : <<use>>
-view -> controller : <<Requête Http>>
+package "ClientMcService" {
+  [ClientController] <<API>>
+  [ClientService] <<Métier>>
+  [ClientDbContext] <<Persistence>>
+  [Client] <<Entity>>
 
-[ProduitService] ..|> IProduitService : <<implémente>>
-[RapportService] ..|> IRapportService : <<implémente>>
-[PerformancesService] ..|> IPerformancesService : <<implémente>>
-[ReapprovisionnementService] ..|> IReapprovisionnementService : <<implémente>>
-[VenteService] ..|> IVenteService : <<implémente>>
+  ClientController --> ClientService
+  ClientService --> ClientDbContext
+  ClientDbContext --> Client
+}
 
-Services -> MagasinDbContext : <<Accède>>
+package "PanierMcService" {
+  [PanierController] <<API>>
+  [PanierService] <<Métier>>
+  [PanierDbContext] <<Persistence>>
+  [Panier] <<Entity>>
+  [LignePanier] <<Entity>>
 
-MagasinDbContext --> DemandeReapprovisionnement : <<mappe>>
-MagasinDbContext --> Produit : <<mappe>>
-MagasinDbContext --> LigneVente : <<mappe>>
-MagasinDbContext --> Magasin : <<mappe>>
-MagasinDbContext --> MagasinStockProduit : <<mappe>>
-MagasinDbContext --> StockCentral : <<mappe>>
-MagasinDbContext --> Vente : <<mappe>>
+  PanierController --> PanierService
+  PanierService --> PanierDbContext
+  PanierDbContext --> Panier
+  PanierDbContext --> LignePanier
+}
 
-DataSeeder --> MagasinDbContext : <<alimente>>
+package "CommandeMcService" {
+  [CommandeController] <<API>>
+  [CommandeService] <<Métier>>
 
-API -> Services : <<utilise>>
+  CommandeController --> CommandeService
+  CommandeService ..> ProduitMcService : utilise via HTTP
+  CommandeService ..> PanierMcService : utilise via HTTP
+  CommandeService ..> VenteMcService : utilise via HTTP
+}
 
+package "RapportMcService" {
+  [RapportController] <<API>>
+  [RapportService] <<Métier>>
+  [RapportDto] <<DTO>>
+
+  RapportController --> RapportService
+  RapportService ..> ProduitMcService : utilise via HTTP
+  RapportService ..> VenteMcService : utilise via HTTP
+  RapportService ..> StockMcService : utilise via HTTP
+}
+
+package "PerformancesMcService" {
+  [PerformancesController] <<API>>
+  [PerformancesService] <<Métier>>
+  [PerformancesDbContext] <<Persistence>>
+  [Performance] <<Entity>>
+
+  PerformancesController --> PerformancesService
+  PerformancesService --> PerformancesDbContext
+  PerformancesDbContext --> Performance
+}
+
+VenteService ..> StockMcService : utilise via HTTP
+VenteService ..> ProduitMcService : utilise via HTTP
 
 @enduml

@@ -1,0 +1,31 @@
+@startuml VueProcessus_Commande
+title Vue de Processus – Validation d’une commande en ligne
+
+actor Utilisateur
+participant "ClientMcService\nClientController" as Client
+participant "PanierMcService\nPanierController" as Panier
+participant "ProduitMcService\nProduitController" as Produit
+participant "CommandeMcService\nCommandeController" as Commande
+participant "VenteMcService\nVenteController" as Vente
+
+Utilisateur -> Commande : POST /commande/valider
+Commande -> Client : GET /clients/{id}
+Client --> Commande : 200 OK (infos client)
+
+Commande -> Panier : GET /paniers/{clientId}
+Panier --> Commande : 200 OK (contenu du panier)
+
+loop Pour chaque produit
+  Commande -> Produit : GET /produits/{id}
+  Produit --> Commande : 200 OK (vérif. disponibilité)
+end
+
+alt Tous les produits sont disponibles
+  Commande -> Vente : POST /ventes
+  Vente --> Commande : 201 Created (id de vente)
+  Commande --> Utilisateur : 200 OK (commande confirmée)
+else Un produit est indisponible
+  Commande --> Utilisateur : 400 Bad Request (stock insuffisant)
+end
+
+@enduml

@@ -1,48 +1,102 @@
-@startuml
-skinparam handwritten true
-top to bottom direction
-
-node "Hôte\n(Windows/macOS/Linux)" as Host {
-  rectangle "Couche Présentation" {
-    node "Client Browser" as Browser {
-      [Razor Pages\n(HTML/CSS/JS)] as RazorPages
-    }
-  }
-  
-  rectangle "Couche Métier" {
-    node "Docker Container : MagasinCentral" as metier {
-      component "Controllers" as Controllers
-      component "Services" as Services
-      component "MagasinCentral.Data.dll\n(EF Core & Models)" as DataLayer
-
-      note right of Controllers
-        gère les requêtes HTTP/HTTPS
-        et appelle les services métier:
-        PerformaceController
-        ProduitController
-        ...
-      end note
-
-      note right of Services
-        contient la logique métier:
-        - ProduitService
-        - RapportService
-        - ReapprovisionnementService
-        - ...
-      end note
-    }
-  }
-
-  rectangle "Couche Données" {
-    node "Docker Container : postgresql" as database {
-      database "Base de données" as DB
-    }
-  }
-
-  Browser --> Controllers : HTTP/HTTPS
-  Controllers --> Services : Utilise
-  metier --> database : TCP
-  Services --> DataLayer : Accède aux données
+@startuml Vue de déploiement physique
+title Vue de déploiement physique de l'application MagasinCentral
+!define RECTANGLE class
+skinparam class {
+  BackgroundColor White
+  ArrowColor Black
+  BorderColor Black
 }
+
+cloud "Client Web (navigateur)" as Client
+
+node "Docker Host (Hôte Linux/macOS/Windows)" {
+    
+    node "API Gateway - Kong" {
+        component "Kong Proxy (8000)" as KongProxy
+        component "Kong Admin API (8001)" as KongAdmin
+        component "Konga UI (1337)" as Konga
+    }
+
+    folder "MagasinCentral (Client MVC)" {
+        component "ASP.NET Razor Pages" as MagasinCentral
+    }
+
+    database "DB MagasinCentral" as DbApp
+
+    node "Microservices" {
+        component "ProduitMcService" as Produit
+        database "DB Produit" as DbProduit
+
+        component "ClientMcService" as ClientMc
+        database "DB Client" as DbClient
+
+        component "CommandeMcService" as Commande
+
+        component "PanierMcService" as Panier
+        database "DB Panier" as DbPanier
+
+        component "VenteMcService" as Vente
+        database "DB Vente" as DbVente
+
+        component "StockMcService" as Stock
+        database "DB Stock" as DbStock
+
+        component "MagasinMcService" as Magasin
+        database "DB Magasin" as DbMagasin
+
+        component "RapportMcService" as Rapport
+
+        component "PerformancesMcService" as Perf
+        database "DB Perf" as DbPerf
+    }
+
+    node "Observabilité" {
+        component "Prometheus (9090)" as Prometheus
+        component "Grafana (3000)" as Grafana
+        component "Node Exporter (9100)" as NodeExporter
+    }
+}
+
+' Relations client -> API Gateway
+Client --> KongProxy : Requêtes HTTP (UI publique)
+KongProxy --> MagasinCentral : Redirection /magasin
+KongProxy --> Produit : /produits
+KongProxy --> ClientMc : /clients
+KongProxy --> Commande : /commandes
+KongProxy --> Panier : /panier
+KongProxy --> Vente : /ventes
+KongProxy --> Stock : /stock
+KongProxy --> Magasin : /magasins
+KongProxy --> Rapport : /rapports
+KongProxy --> Perf : /performances
+
+' Relations interne
+MagasinCentral --> KongProxy : Appels HTTP via HttpClient
+MagasinCentral --> DbApp
+
+Produit --> DbProduit
+ClientMc --> DbClient
+Panier --> DbPanier
+Vente --> DbVente
+Stock --> DbStock
+Magasin --> DbMagasin
+Perf --> DbPerf
+
+Prometheus --> KongProxy : Scrape
+Prometheus --> MagasinCentral : Scrape
+Prometheus --> Produit : Scrape
+Prometheus --> ClientMc : Scrape
+Prometheus --> Commande : Scrape
+Prometheus --> Panier : Scrape
+Prometheus --> Vente : Scrape
+Prometheus --> Stock : Scrape
+Prometheus --> Magasin : Scrape
+Prometheus --> Rapport : Scrape
+Prometheus --> Perf : Scrape
+Prometheus --> NodeExporter : Scrape
+Grafana --> Prometheus
+NodeExporter --> Prometheus
+
+Konga --> KongAdmin
 
 @enduml
