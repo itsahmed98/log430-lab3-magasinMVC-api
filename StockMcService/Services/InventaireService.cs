@@ -21,6 +21,7 @@ namespace StockMcService.Services
         /// <inheritdoc/> 
         public async Task<bool> TransférerStockAsync(int produitId, int magasinId, int quantite)
         {
+            _logger.LogInformation("Tentative de transfert de {quantite} unités du produit {produitId} vers le magasin {magasinId}", quantite, produitId, magasinId);
             var stockCentral = await _context.StockItems
                 .FirstOrDefaultAsync(s => s.MagasinId == 1 && s.ProduitId == produitId);
 

@@ -22,7 +22,7 @@ namespace StockMcService.Test.UnitTests
         public async Task TransférerStockAsync_ShouldTransfer_WhenEnoughCentralStock()
         {
             await using var context = new StockDbContext(_options);
-            context.StockItems.Add(new StockItem { MagasinId = 0, ProduitId = 1, Quantite = 100 });
+            context.StockItems.Add(new StockItem { MagasinId = 1, ProduitId = 1, Quantite = 100 });
             await context.SaveChangesAsync();
 
             var service = new InventaireService(context, Mock.Of<ILogger<InventaireService>>());
@@ -39,7 +39,7 @@ namespace StockMcService.Test.UnitTests
         public async Task TransférerStockAsync_ShouldFail_WhenNotEnoughStock()
         {
             await using var context = new StockDbContext(_options);
-            context.StockItems.Add(new StockItem { MagasinId = 0, ProduitId = 1, Quantite = 5 });
+            context.StockItems.Add(new StockItem { MagasinId = 1, ProduitId = 1, Quantite = 5 });
             await context.SaveChangesAsync();
 
             var service = new InventaireService(context, Mock.Of<ILogger<InventaireService>>());

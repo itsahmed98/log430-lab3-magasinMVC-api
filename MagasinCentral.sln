@@ -39,6 +39,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanierMcService", "PanierMc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandeMcService", "CommandeMcService\CommandeMcService.csproj", "{E36F5898-C058-4D07-A088-DAE1A9A7CF91}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PanierMcService.Test", "PanierMcService.Test\PanierMcService.Test.csproj", "{F3D98327-EF55-4437-ACFC-A6CBB9C89089}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -117,6 +119,10 @@ Global
 		{E36F5898-C058-4D07-A088-DAE1A9A7CF91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E36F5898-C058-4D07-A088-DAE1A9A7CF91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E36F5898-C058-4D07-A088-DAE1A9A7CF91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3D98327-EF55-4437-ACFC-A6CBB9C89089}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3D98327-EF55-4437-ACFC-A6CBB9C89089}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3D98327-EF55-4437-ACFC-A6CBB9C89089}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3D98327-EF55-4437-ACFC-A6CBB9C89089}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

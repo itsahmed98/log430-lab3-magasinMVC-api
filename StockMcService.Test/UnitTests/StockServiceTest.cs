@@ -3,12 +3,16 @@ using StockMcService.Services;
 using StockMcService.Models;
 using StockMcService.Data;
 using Microsoft.EntityFrameworkCore;
+using Castle.Core.Logging;
+using Moq;
+using Microsoft.Extensions.Logging;
 
 namespace StockMcService.Test.UnitTests
 {
     public class StockServiceTest
     {
         private readonly DbContextOptions<StockDbContext> _options;
+        private readonly Mock<ILogger<StockService>> _loggerMock = new Mock<ILogger<StockService>>();
 
         public StockServiceTest()
         {
@@ -24,7 +28,7 @@ namespace StockMcService.Test.UnitTests
             context.StockItems.Add(new StockItem { MagasinId = 1, ProduitId = 2, Quantite = 50 });
             await context.SaveChangesAsync();
 
-            var service = new StockService(context);
+            var service = new StockService(context, _loggerMock.Object);
             var stocks = await service.GetAllStocksAsync();
 
             Assert.Single(stocks);
@@ -38,7 +42,7 @@ namespace StockMcService.Test.UnitTests
             context.StockItems.Add(new StockItem { MagasinId = 1, ProduitId = 2, Quantite = 30 });
             await context.SaveChangesAsync();
 
-            var service = new StockService(context);
+            var service = new StockService(context, _loggerMock.Object);
             var stock = await service.GetStockByMagasinProduitAsync(1, 2);
 
             Assert.NotNull(stock);
@@ -49,7 +53,7 @@ namespace StockMcService.Test.UnitTests
         public async Task GetStockByMagasinProduitAsync_ShouldReturnNull_WhenNotFound()
         {
             await using var context = new StockDbContext(_options);
-            var service = new StockService(context);
+            var service = new StockService(context, _loggerMock.Object);
 
             var stock = await service.GetStockByMagasinProduitAsync(999, 999);
             Assert.Null(stock);

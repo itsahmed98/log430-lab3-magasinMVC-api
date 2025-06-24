@@ -179,6 +179,7 @@ namespace PanierMcService.Services
             foreach (var ligne in panier.Lignes)
             {
                 // Appel au ProduitMcService pour obtenir le prix
+                var temp = $"{_httpProduit.BaseAddress}/{ligne.ProduitId}";
                 var produit = await _httpProduit.GetFromJsonAsync<ProduitDto>(
                     $"{_httpProduit.BaseAddress}/{ligne.ProduitId}");
 
