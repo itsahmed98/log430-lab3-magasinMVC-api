@@ -1,6 +1,4 @@
 using MagasinCentral.Models;
-using MagasinCentral.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagasinCentral.Api.Controllers
@@ -13,8 +11,8 @@ namespace MagasinCentral.Api.Controllers
     //[Authorize]
     public class RapportApiController : ControllerBase
     {
-        private readonly IRapportService _rapportService;
-        private readonly ILogger<IRapportService> _logger;
+        private readonly ILogger<RapportApiController> _logger;
+        private readonly HttpClient _httpClient;
 
         /// <summary>
         /// Constructeur du contrôleur de rapport.
@@ -22,11 +20,11 @@ namespace MagasinCentral.Api.Controllers
         /// <param name="logger"></param>
         /// <param name="rapportService"></param>
         /// <exception cref="ArgumentNullException"></exception>
-        public RapportApiController(ILogger<IRapportService> logger, IRapportService rapportService)
+        public RapportApiController(ILogger<RapportApiController> logger, IHttpClientFactory httpClientFactory)
         {
             {
-                _rapportService = rapportService ?? throw new ArgumentNullException(nameof(rapportService));
                 _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+                _httpClient = httpClientFactory?.CreateClient("RapportMcService") ?? throw new ArgumentNullException(nameof(httpClientFactory));
             }
         }
 
@@ -43,7 +41,7 @@ namespace MagasinCentral.Api.Controllers
 
             try
             {
-                result = Ok(await _rapportService.ObtenirRapportConsolideAsync());
+                result = Ok(await _httpClient.GetFromJsonAsync<RapportVentesDto>(""));
                 _logger.LogInformation("Rapport consolidé récupéré avec succès.");
             }
             catch (Exception ex)

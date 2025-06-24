@@ -1,70 +1,52 @@
-using MagasinCentral.Configuration;
-using MagasinCentral.Data;
-using MagasinCentral.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Prometheus;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var jwtSettingsSection = builder.Configuration.GetSection("JwtSettings");
-builder.Services.Configure<JwtSettings>(jwtSettingsSection);
-var jwtSettings = jwtSettingsSection.Get<JwtSettings>();
-
-builder.Services.AddDbContext<MagasinDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddHttpClient("ProduitMcService", client =>
 {
-    options.Password.RequireDigit = true;
-    options.Password.RequiredLength = 6;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireLowercase = false;
-})
-    .AddEntityFrameworkStores<MagasinDbContext>()
-    .AddDefaultTokenProviders();
-
-// Configuration des services d'identit�
-var key = Encoding.UTF8.GetBytes(jwtSettings!.Secret);
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = true;
-    options.SaveToken = true;
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidIssuer = jwtSettings.Issuer,
-
-        ValidateAudience = true,
-        ValidAudience = jwtSettings.Audience,
-
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(key),
-
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.FromMinutes(1)
-    };
+    client.BaseAddress = new Uri("https://localhost:7198/api/v1/produits"); // a remplacer par le gateway
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddHttpClient("PerformancesMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7044/api/v1/performances");
+});
 
-builder.Services.AddScoped<IRapportService, RapportService>();
-builder.Services.AddScoped<IReapprovisionnementService, ReapprovisionnementService>();
-builder.Services.AddScoped<IPerformancesService, PerformancesService>();
-builder.Services.AddScoped<IProduitService, ProduitService>();
-builder.Services.AddScoped<IVenteService, VenteService>();
-builder.Services.AddScoped<IStockService, StockService>();
+builder.Services.AddHttpClient("VenteMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7184/api/v1/ventes");
+});
+
+builder.Services.AddHttpClient("MagasinMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7013/api/v1/magasins");
+});
+
+builder.Services.AddHttpClient("StockMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7185");
+});
+
+builder.Services.AddHttpClient("RapportMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7214/api/v1/rapports");
+});
+
+builder.Services.AddHttpClient("ClientMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7041/api/v1/clients");
+});
+
+builder.Services.AddHttpClient("PanierMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7019/api/v1/panier"); 
+});
+
+builder.Services.AddHttpClient("CommandeMcService", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7154/api/v1/commandes/valider");
+});
 
 builder.Services.AddControllersWithViews();
 
@@ -76,30 +58,6 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Magasin Central API",
         Version = "v1",
         Description = "API pour la gestion central des magasins."
-    });
-    // Ajouter la configuration JWT dans Swagger UI
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = ParameterLocation.Header,
-        Description = "Entrez 'Bearer {token}'"
-    });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
     });
 });
 
@@ -119,12 +77,6 @@ builder.Services.AddMemoryCache();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<MagasinDbContext>();
-    db.Database.Migrate();
-}
-
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -138,10 +90,8 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    //app.UseHsts();
 }
 
-//app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCors("AllowFrontend");
 

@@ -1,141 +1,266 @@
-@startuml "Vue Logique - Magasin Central"
-title Vue Logique - Magasin Central
-top to bottom direction
+@startuml "Vue Logique - Microservices"
+title Vue Logique - Architecture Évoluée
+
+left to right direction
 skinparam class {
   BackgroundColor White
-  ArrowColor SeaGreen
+  ArrowColor DarkGreen
+  BorderColor Black
 }
 
-package "MagasinCentral" {
-    Package "Models" as models{
-        class Produit {
-            +int ProduitId
-            +string Nom
-            +string Categorie
-            +decimal Prix
-            +string Description
-        }
-        class Magasin {
-            +int MagasinId
-            +string Nom
-            +string Adresse
-        }
-        class MagasinStockProduit {
-            +int MagasinId
-            +int ProduitId
-            +int Quantite
-        }
-        class StockCentral {
-            +int ProduitId
-            +int Quantite
-        }
-        class Vente {
-            +int VenteId
-            +DateTime Date
-            +int MagasinId
-            +int ProduitId
-            +int Quantite
-            +decimal PrixUnitaire
-        }
-        class DemandeReapprovisionnement {
-            +int DemandeId
-            +int MagasinId
-            +int ProduitId
-            +int QuantiteDemandee
-            +DateTime DateDemande
-            +string Statut
-        }
-    }
+package "ProduitMcService" {
+  class Produit {
+    +int ProduitId
+    +string Nom
+    +string Categorie
+    +decimal Prix
+    +string Description
+  }
 
-    package "Controllers" as controllers{
-        class ProduitController {
-            +Index()
-            +Modifier(int produitId)
-            +Modifier(Produit produit)
-            +Recherche(string produit)
-        }
-        class RapportController {
-            +Index()
+  class ProduitController {
+    +GetAll()
+    +GetById(int id)
+    +Modifier(int id, Produit)
+  }
 
-        }
-        class TraiterDemandesController {
-            +Index()
-            +Traiter(int demandeId, bool approuver)
-        }
-        class PerformancesController {
-            Index()
-        }
-        class ReapprovisionnementController {
-            +Index(int magasinId)
-            +DemanderReapprovisionnement(int magasinId, int produitId, int quantite)
-            +DemandesReapprovisionnement()
+  class ProduitService {
+    +GetAllAsync()
+    +GetByIdAsync(int id)
+    +UpdateProduitAsync(Produit)
+  }
 
-        }
-    }
+  class IProduitService {
 
-    package "Services" as services{
-        class ProduitService {
-            +GetAllProduitsAsync()
-            +GetProduitByIdAsync(int produitId)
-            +ModifierProduitAsync(Produit produit)
-            +RechercherProduitsAsync(string terme)
-        }
-        class RapportService {
-            +ObtenirRapportConsolideAsync()
-        }
-        class StockService {
-            +GetStockByMagasinId(int magasinId)
-        }
-        class PerformancesService {
-            +GetPerformances()
-        }
-        class ReapprovisionnementService {
-            +GetStocksAsync(int magasinId)
-            +CreerDemandeReapprovisionnementAsync(int magasinId, int produitId, int quantiteDemande)
-            +GetDemandesReapprovisionnementAsync()
-            +GetDemandesEnAttenteAsync()
-            +TraiterDemandeAsync(int demandeId, bool approuver)
-        }
-        class VenteService {
-            +CreerVenteAsync(int magasinId, List<(int produitId, int quantite)> lignes)
-            +AnnulerVenteAsync(int venteId)
-            +GetVentesAsync()
-        }
-    }
+  }
 
-    package "Api" as api {
-        class ProduitApiController {
-            +Produits()
-            +Produit(int produitId)
-            +Modifier([FromRoute] int produitId, [FromBody] Produit payload)
-        }
-        class RapportApiController {
-            +RapportConsolide()
-        }
-        class AuthApiController {
-            +Login([FromBody] LoginRequest request)
-            +Register([FromBody] RegisterRequest request)
-        }
-        class PerformancesApiController {
-            +GetPerformances()
-        }
-        class StockApiController {
-            +GetStockMagasin(int magasinId)
-        }
-    }
+  ProduitController --> ProduitService
+  ProduitService --> Produit
+  ProduitService ..|> IProduitService : "Implémente"
 }
 
+package "ClientMcService" {
+  class Client {
+    +int ClientId
+    +string Nom
+    +string Courriel
+    +string Adresse
+  }
 
-Magasin "1" -- "0..*" MagasinStockProduit : stocks
-Produit "1" -- "0..*" MagasinStockProduit
-Produit "1" -- "1" StockCentral
-Magasin "1" -- "0..*" Vente
-Produit "1" -- "0..*" Vente
-Magasin "1" -- "0..*" DemandeReapprovisionnement
-Produit "1" -- "0..*" DemandeReapprovisionnement
+  class ClientController {
+    +GetAll()
+    +Creer(Client)
+    +GetOne(int id)
+  }
 
-controllers -> services : utilise
-services -> models : accède aux données
-api -> services : utilise
+  class ClientService {
+    +CreerClientAsync(Client)
+    +GetByIdAsync(int id)
+    +GetAllAsync()
+  }
+
+  class IClientService {
+  }
+
+  ClientController --> ClientService
+  ClientService --> Client
+  ClientService ..|> IClientService : "Implémente"
+}
+
+package "PanierMcService" {
+  class LignePanier {
+    +int ProduitId
+    +int Quantite
+  }
+
+  class Panier {
+    +int PanierId
+    +int ClientId
+    +List<LignePanier> Lignes
+  }
+
+  class PanierController {
+    +AjouterLigne(int clientId, LignePanier ligne)
+    +SupprimerLigne(int clientId, int produitId)
+    +Vider(int clientId)
+    +Get(int clientId)
+  }
+
+  class PanierService {
+    +AjouterLigneAsync()
+    +CalculerTotalAsync()
+    +ObtenirPanierParClientAsync()
+  }
+
+  class IPanierService {
+  }
+
+  PanierController --> PanierService
+  PanierService --> Panier
+  PanierService --> LignePanier
+}
+
+package "CommandeMcService" {
+  class CommandeController {
+    +ValiderCommande(commandeRequest)
+  }
+
+  class CommandeService {
+    +ValiderCommandeAsync(...)
+  }
+
+  class ICommandeService {
+  }
+
+  CommandeController --> CommandeService
+  CommandeService ..|> ICommandeService : "Implémente"
+}
+
+package "VenteMcService" {
+  class Vente {
+    +int VenteId
+    +DateTime Date
+    +int? MagasinId
+    +int? ClientId
+    +bool IsEnLigne
+  }
+
+  class LigneVente {
+    +int ProduitId
+    +int Quantite
+    +decimal PrixUnitaire
+  }
+
+  class VenteController {
+    +Creer(Vente)
+    +GetAll()
+    +GetById(int id)
+    +GetByMagasin(int magasinId)
+    +Delete(int id)
+  }
+
+  class VenteService {
+    +CreateAsync(Vente vente)
+    +DeleteAsync(int id)
+    +GetAllAsync()
+    +GetByIdAsync(int id)
+    +GetByMagasinAsync(int magasinId)
+  }
+
+  VenteController --> VenteService
+  VenteService --> Vente
+  Vente --> LigneVente
+
+}
+
+package "StockMcService" {
+  class StockCentral {
+    +int ProduitId
+    +int Quantite
+  }
+
+  class StockProduitMagasin {
+    +int MagasinId
+    +int ProduitId
+    +int Quantite
+  }
+
+  class StockController {
+    +GetAll()
+    +GetStockCentral()
+    +GetStockMagasin(int magasinId)
+    +GetOne(int magasinId, int produitId)
+    +UpdateStock(int magasinId, int produitId, int quantite)
+  }
+
+  class StockService {
+    +GetStockCentralAsync()
+    +GetStockParMagasinAsync(int magasinId, int produitId)
+    +UpdateStockAsync(int magasinId, int produitId, int quantite)
+  }
+
+  class IStockService {
+  }
+
+  class ReapprovisionnementController {
+    +CreerDemande()
+    +GetEnAttente()
+    +ValiderDemande(int id)
+  }
+
+  class ReapprovisionnementService {
+    +CreerDemandeAsync()
+    +GetEnAttenteAsync()
+    +ValiderDemandeAsync(int id)
+  }
+
+  class IReapprovisionnementService {
+  }
+
+  class InventaireService {
+    +TransférerStockAsync(int produitId, int magasinId, int quantite)
+  }
+
+  class IInventaireService {
+  }
+
+  StockController --> StockService
+  StockService --> StockCentral
+  StockService --> StockProduitMagasin
+  StockService ..|> IStockService : "Implémente"
+  ReapprovisionnementController --> ReapprovisionnementService
+  ReapprovisionnementService ..|> IReapprovisionnementService : "Implémente"
+  ReapprovisionnementController --> InventaireService
+  InventaireService ..|> IInventaireService : "Implémente"
+}
+
+package "MagasinMcService" {
+  class Magasin {
+    +int MagasinId
+    +string Nom
+    +string Adresse
+  }
+
+  class MagasinController {
+    +GetAll()
+    +GetById()
+  }
+
+  class MagasinService {
+    +GetAllAsync()
+    +GetByIdAsync(int id)
+  }
+
+  class IMagasinService {
+  }
+
+  MagasinController --> MagasinService
+  MagasinService --> Magasin
+  MagasinService ..|> IMagasinService : "Implémente"
+}
+
+package "RapportMcService" {
+    class RapportController {
+        +GetRapport()
+    }
+
+    class RapportService {
+        +ObtenirRapportConsolideAsync()
+    }
+
+    class IRapportService {
+    }
+    RapportController --> RapportService
+    RapportService ..|> IRapportService : "Implémente"
+}
+
+  VenteService --> ProduitMcService : Interagit avec
+  VenteService --> StockMcService : Interagit avec
+  CommandeService --> StockMcService : Interagit avec
+  CommandeService --> PanierMcService : Interagit avec
+  CommandeService --> VenteMcService : Interagit avec
+  PanierService --> ProduitMcService : Interagit avec
+  RapportService --> VenteMcService : Interagit avec
+  RapportService --> ProduitMcService : Interagit avec
+  RapportService --> StockMcService : Interagit avec
 
 @enduml

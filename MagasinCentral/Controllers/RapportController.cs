@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using MagasinCentral.Services;
+using MagasinCentral.Models;
 
 namespace MagasinCentral.Controllers
 {
@@ -8,31 +8,31 @@ namespace MagasinCentral.Controllers
     /// </summary>
     public class RapportController : Controller
     {
-        private readonly IRapportService _rapportService;
         private readonly ILogger<RapportController> _logger;
+        private readonly HttpClient _httpClient;
 
         /// <summary>
         /// Constructeur de <see cref="RapportController"/>.
         /// </summary>
         /// <param name="rapportService"></param>
-        public RapportController(ILogger<RapportController> logger, IRapportService rapportService)
+        public RapportController(ILogger<RapportController> logger, IHttpClientFactory httpClientFactory)
 
         {
-            _rapportService = rapportService ?? throw new ArgumentNullException(nameof(rapportService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _httpClient = httpClientFactory?.CreateClient("RapportMcService") ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
         /// <summary>
         /// Affiche la page d'accueil du rapport consolidé.
         /// </summary>
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             IActionResult? result = null!;
 
             try
             {
                 _logger.LogInformation("Tentative de récupération du rapport consolidé...");
-                var rapportConsolide = _rapportService.ObtenirRapportConsolideAsync().Result;
+                var rapportConsolide = await _httpClient.GetFromJsonAsync<RapportVentesDto>("");
 
                 if (rapportConsolide == null)
                 {

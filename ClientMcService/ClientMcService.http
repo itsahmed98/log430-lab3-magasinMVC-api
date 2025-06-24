@@ -1,0 +1,6 @@
+@ClientMcService_HostAddress = http://localhost:5037
+
+GET {{ClientMcService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

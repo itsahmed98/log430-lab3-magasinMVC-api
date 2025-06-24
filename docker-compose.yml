@@ -11,11 +11,10 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
 
-  # .NET Core API
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: MagasinCentral/Dockerfile
     image: magasincentral-api:latest
     environment:
       ASPNETCORE_URLS: "http://+:80"
@@ -23,7 +22,197 @@ services:
       ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=magasincentraldb;Username=magasinuser;Password=magasinpass"
     depends_on:
       - db
+    
+  produit-db:
+    image: postgres:15
+    container_name: magasincentral-produitservice-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: magasincentral-produit-db
+    volumes:
+      - produit_data:/var/lib/postgresql/data
+
+  produitmc:
+    build:
+      context: .
+      dockerfile: ProduitMcService/Dockerfile
+    image: produitmc-api:latest
+    ports:
+      - "7198:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    depends_on:
+      - produit-db
+
+  client-db:
+    image: postgres:15
+    container_name: magasincentral-clientservice-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: magasincentral-client-db
+    volumes:
+      - client_data:/var/lib/postgresql/data
+
+  clientmc:
+    build:
+      context: .
+      dockerfile: ClientMcService/Dockerfile
+    image: clientmc-api:latest
+    ports:
+      - "7041:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    depends_on:
+      - client-db
+
+  commandemc:
+    build:
+      context: .
+      dockerfile: CommandeMcService/Dockerfile
+    image: commandemc-api:latest
+    ports:
+      - "7154:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+
+  magasin-db:
+    image: postgres:15
+    container_name: magasincentral-magasindb
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: magasincentral-magasin-db
+    volumes:
+      - magasin_data:/var/lib/postgresql/data
   
+  magasinmc:
+    build:
+      context: .
+      dockerfile: MagasinMcService/Dockerfile
+    image: magasinmc-api:latest
+    ports:
+      - "7013:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    depends_on:
+      - magasin-db
+
+  panier-db:
+    image: postgres:15
+    container_name: magasincentral-panier-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: magasincentral-panier-db
+    volumes:
+      - panier_data:/var/lib/postgresql/data
+  
+  paniermc:
+    build:
+      context: .
+      dockerfile: PanierMcService/Dockerfile
+    image: paniermc-api:latest
+    ports:
+      - "7019:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    depends_on:
+      - panier-db
+
+  rapportmc:
+    build:
+      context: .
+      dockerfile: RapportMcService/Dockerfile
+    image: rapportmc-api:latest
+    ports:
+      - "7214:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+
+  stock-db:
+    image: postgres:15
+    container_name: magasincentral-stock-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: magasincentral-stock-db
+    volumes:
+      - stock_data:/var/lib/postgresql/data
+
+  stockmc:
+    build:
+      context: .
+      dockerfile: StockMcService/Dockerfile
+    image: stockmc-api:latest
+    ports:
+      - "7185:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    depends_on:
+      - stock-db
+
+  vente-db:
+    image: postgres:15
+    container_name: magasincentral-vente-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: magasincentral-vente-db
+    volumes:
+      - vente_data:/var/lib/postgresql/data
+
+  ventemc:
+    build:
+      context: .
+      dockerfile: VenteMcService/Dockerfile
+    image: ventemc-api:latest
+    ports:
+      - "7184:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    depends_on:
+      - vente-db
+
+  performances-db:
+    image: postgres:15
+    container_name: magasincentral-performances-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: magasinuser
+      POSTGRES_PASSWORD: magasinpass
+      POSTGRES_DB: magasincentral-performances-db
+    volumes:
+      - performances_data:/var/lib/postgresql/data
+
+  performancesmc:
+    build:
+      context: .
+      dockerfile: PerformancesMcService/Dockerfile
+    image: performancesmc-api:latest
+    ports:
+      - "7044:80"
+    environment:
+      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_ENVIRONMENT: "Production"
+    depends_on:
+      - performances-db
+
   nginx:
     image: nginx:stable
     container_name: magasincentral-nginx
@@ -33,7 +222,6 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - app
-
 
     # Prometheus pour les métriques
   prometheus:
@@ -71,7 +259,64 @@ services:
     ports:
       - "9100:9100"
 
+  kong-database:
+    image: postgres:13
+    container_name: kong-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: kong
+      POSTGRES_DB: kong
+      POSTGRES_PASSWORD: kong
+    volumes:
+      - kong_db_data:/var/lib/postgresql/data
+
+  kong:
+    image: kong:3.5
+    container_name: kong
+    restart: unless-stopped
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: kong-database
+      KONG_PG_PASSWORD: kong
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+    ports:
+      - "8000:8000"   # Proxy (clients)
+      - "8001:8001"   # Admin API (gestion routes/services)
+    depends_on:
+      - kong-database
+    extra_hosts:
+      - "host.docker.internal:host-gateway" 
+
+  konga:
+    image: pantsel/konga:latest
+    container_name: konga
+    restart: unless-stopped
+    environment:
+      NODE_ENV: "production"
+      DB_ADAPTER: "postgres"
+      DB_HOST: "kong-database"
+      DB_PORT: 5432
+      DB_USER: "kong"
+      DB_PASSWORD: "kong"
+      DB_DATABASE: "kong"
+    ports:
+      - "1337:1337"
+    depends_on:
+      - kong-database
+
 volumes:
   db_data:
   grafana_data:
   prometheus_data:
+  produit_data:
+  client_data:
+  magasin_data:
+  panier_data:
+  stock_data:
+  vente_data:
+  performances_data:
+  kong_db_data:

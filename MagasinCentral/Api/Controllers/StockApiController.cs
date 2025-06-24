@@ -1,61 +1,56 @@
 using MagasinCentral.Models;
-using MagasinCentral.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MagasinCentral.Api.Controllers
 {
     /// <summary>
-    /// Contrôleur pour le stock des magasins.
+    /// Contrôleur pour le stock des magasins (appel du microservice StockMcService).
     /// </summary>
     [ApiController]
     [Route("api/v1/stocks")]
-    //[Authorize]
     public class StockApiController : ControllerBase
     {
-        private readonly IStockService _stockService;
         private readonly ILogger<StockApiController> _logger;
+        private readonly HttpClient _httpClient;
 
         /// <summary>
-        /// Constructeur du contrôleur de rapport.
+        /// Constructeur du contrôleur.
         /// </summary>
         /// <param name="logger"></param>
-        /// <param name="stockService"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public StockApiController(ILogger<StockApiController> logger, IStockService stockService)
+        /// <param name="httpClientFactory"></param>
+        public StockApiController(ILogger<StockApiController> logger, IHttpClientFactory httpClientFactory)
         {
-            {
-                _stockService = stockService ?? throw new ArgumentNullException(nameof(stockService));
-                _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            }
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _httpClient = httpClientFactory?.CreateClient("StockMcService") ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
         /// <summary>
-        /// Récupérer la quantité du stock dans un magasin spécifique.
+        /// Récupérer le stock d’un magasin spécifique.
         /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        /// <param name="magasinId">Identifiant du magasin</param>
+        [HttpGet("{magasinId:int}")]
+        [ProducesResponseType(typeof(List<StockDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ResponseCache(Duration = 30, Location = ResponseCacheLocation.Client)]
-        public async Task<ActionResult<int>> GetStockMagasin(int magasinId)
+        public async Task<ActionResult<List<StockDto>>> GetStockMagasin(int magasinId)
         {
             try
             {
-                int? quantite = await _stockService.GetStockByMagasinId(magasinId);
+                var stocks = await _httpClient.GetFromJsonAsync<List<StockDto>>($"{_httpClient.BaseAddress}api/v1/stocks/stockmagasin/{magasinId}");
 
-                if (quantite == null)
+                if (stocks == null || !stocks.Any())
                 {
-                    _logger.LogWarning("Stock non trouvé pour le magasin ID={MagasinId}", magasinId);
+                    _logger.LogWarning("Aucun stock trouvé pour le magasin ID={MagasinId}", magasinId);
                     return NotFound();
                 }
-                _logger.LogInformation("Stock récupéré pour le magasin ID={MagasinId}: {Quantite}", magasinId, quantite.Value);
-                return quantite.Value;
+
+                _logger.LogInformation("Stock récupéré pour magasin ID={MagasinId}. Nombre de produits : {Count}", magasinId, stocks.Count);
+                return Ok(stocks);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur lors de la récupération du stock du magasin: {MagasinId}", magasinId);
+                _logger.LogError(ex, "Erreur lors de la récupération du stock pour le magasin ID={MagasinId}", magasinId);
                 return StatusCode(500, "Une erreur s'est produite lors de la récupération du stock.");
             }
         }

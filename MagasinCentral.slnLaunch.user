@@ -1,0 +1,47 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "PanierMcService\\PanierMcService.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "ProduitMcService\\ProduitMcService.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "StockMcService\\StockMcService.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "MagasinCentral\\MagasinCentral.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "PerformancesMcService\\PerformancesMcService.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "VenteMcService\\VenteMcService.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "RapportMcService\\RapportMcService.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "MagasinMcService\\MagasinMcService.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "CommandeMcService\\CommandeMcService.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "ClientMcService\\ClientMcService.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

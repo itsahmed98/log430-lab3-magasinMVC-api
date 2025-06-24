@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using MagasinCentral.Services;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+using MagasinCentral.Models;
 
 namespace MagasinCentral.Api.Controllers
 {
@@ -13,13 +11,13 @@ namespace MagasinCentral.Api.Controllers
     [Route("api/v1/performances")]
     public class PerformancesApiController : ControllerBase
     {
-        private readonly IPerformancesService _performancesService;
         private readonly ILogger<PerformancesApiController> _logger;
+        private readonly HttpClient _httpClient;
 
-        public PerformancesApiController(ILogger<PerformancesApiController> logger, IPerformancesService performancesService)
+        public PerformancesApiController(ILogger<PerformancesApiController> logger, IHttpClientFactory httpClientFactory)
         {
-            _performancesService = performancesService ?? throw new ArgumentNullException(nameof(performancesService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _httpClient = httpClientFactory?.CreateClient("PerformancesMcService") ?? throw new ArgumentNullException(nameof(httpClientFactory));
         }
 
         /// <summary>
@@ -35,7 +33,7 @@ namespace MagasinCentral.Api.Controllers
 
             try
             {
-                result = Ok(await _performancesService.GetPerformances());
+                result = Ok(await _httpClient.GetFromJsonAsync<List<PerformanceDto>>(""));
                 _logger.LogInformation("Performances récupérées avec succès.");
             }
             catch (Exception ex)

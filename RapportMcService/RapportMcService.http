@@ -1,0 +1,6 @@
+@RapportMcService_HostAddress = http://localhost:5193
+
+GET {{RapportMcService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

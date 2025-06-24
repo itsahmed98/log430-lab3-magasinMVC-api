@@ -1,0 +1,35 @@
+@startuml Vue de processus - Effectuer une vente
+title Vue de Processus – Effectuer une vente
+
+actor Utilisateur
+participant "Application MVC\n(VenteController)" as UI
+participant "VenteMcService\n(VenteController)" as VenteController
+participant "VenteMcService\n(VenteService)" as VenteService
+participant "ProduitMcService\n(ProduitService)" as ProduitService
+participant "VenteMcService\n(StockDbContext)" as StockDbContext
+participant "StockMcService\n(StockController)" as StockController
+
+
+Utilisateur -> UI : Créer une vente
+UI -> VenteController : POST api/v1/ventes, Payload
+VenteController -> VenteService : created = CreateAsync()
+
+loop for each ligne in vente.lignes
+    VenteService -> ProduitService : produit = GET api/v1/produits/{ligne.produitId}
+    ProduitService --> VenteService : 200 OK (produit)
+    VenteService -> VenteService : lignesVente.Add(produit.Id, produit.Prix, produit.quantite) 
+end 
+
+VenteService -> StockDbContext : Add(vente)
+VenteService -> StockDbContext : SaveChangesAsync()
+
+loop for each ligne in lignesVentes
+    VenteService -> StockController : PUT api/v1/stocks?magasinId={vente.magasinId}\n&produitId={ligne.produitId}\n&quantite={-ligne.quantite}
+    StockController --> VenteService : 204 No Content
+end 
+
+VenteService -> VenteController : 201 Created (vente créée)
+VenteController --> UI : 201 Created (vente créée)
+UI --> Utilisateur : Afficher la vente créée
+
+@enduml
