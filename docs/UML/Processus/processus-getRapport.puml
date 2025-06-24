@@ -1,0 +1,29 @@
+@startuml Vue de processus - Récupération de rapport consolidée des ventes
+title Vue de Processus – Récupération de rapport consolidée des ventes
+
+actor Gestionnaire
+participant "Application MVC\n(RapportController)" as UI
+participant "RapportMcService\n(RapportController)" as RapportController
+participant "RapportMcService\n(RapportService)" as RapportService
+participant "ProduittMcService\n(ProduitController)" as ProduitController
+participant "VenteMcService\n(VenteController)" as VenteController
+participant "StockMcService\n(StockController)" as StockController
+
+Gestionnaire -> UI : obtenir rapport consolidé
+UI -> RapportController : GET api/v1/rapports
+RapportController -> RapportService : rappot = ObtenirRapportConsolideAsync()
+RapportService -> ProduitController : produits = GET api/v1/produits
+ProduitController --> RapportService : 200 OK
+
+RapportService -> VenteController : ventes = GET api/v1/ventes
+VenteController --> RapportService : 200 OK
+
+RapportService -> StockController : stocks = GET api/v1/stocks
+StockController --> RapportService : 200 OK
+
+RapportService -> RapportController : 200 OK (rapport consolidé)
+RapportController --> UI : 200 OK (rapport consolidé) 
+
+UI --> Gestionnaire : Afficher le rapport consolidé 
+
+@enduml
